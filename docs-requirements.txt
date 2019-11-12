@@ -1,0 +1,3 @@
+recommonmark
+sphinx
+-r requirements.txt
