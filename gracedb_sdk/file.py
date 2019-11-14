@@ -4,8 +4,6 @@ from sys import stdin
 
 from requests.utils import guess_filename, to_key_val_list
 
-__all__ = ('SessionFileMixin',)
-
 
 def _guess_content_type(filename):
     return guess_type(filename)[0] or 'application/octet-stream'

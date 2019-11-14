@@ -1,8 +1,6 @@
 """GraceDB API endpoints."""
 from os.path import join
 
-__all__ = ('API',)
-
 
 def str_or_collection(values):
     if values is None:

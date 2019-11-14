@@ -7,8 +7,6 @@ from safe_netrc import netrc
 
 from .cert_reload import CertReloadingHTTPAdapter
 
-__all__ = ('SessionAuthMixin',)
-
 
 def find_x509_credentials():
     """Try to find a user's X509 certificate and key.

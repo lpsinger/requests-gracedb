@@ -10,8 +10,6 @@ from requests.adapters import HTTPAdapter
 
 _backend = default_backend()
 
-__all__ = ('CertReloadingHTTPAdapter',)
-
 
 def load_certificate(filename):
     with open(filename, 'rb') as f:
