@@ -47,14 +47,13 @@ def test_integration(client, socket_enabled, coinc_xml_bytes):
     events_log_result = client.events[event_id].log.get()
     assert events_log_result[0]['filename'] == 'coinc.xml'
 
-    # FIXME: this doesn't work yet
-    # events_log_create_result = client.events[event_id].log.create(
-    #     'testing: 1, 2, 3', tags='emfollow')
-    # assert events_log_create_result['comment'] == 'testing: 1, 2, 3'
-    # assert events_log_create_result['tag_names'] == ['emfollow']
+    events_log_create_result = client.events[event_id].log.create(
+        comment='testing: 1, 2, 3', tags='emfollow')
+    assert events_log_create_result['comment'] == 'testing: 1, 2, 3'
+    assert events_log_create_result['tag_names'] == ['emfollow']
 
     events_log_create_result = client.events[event_id].log.create(
-        'foobar', filename='foo.txt', filecontents=b'bar bat')
+        comment='foobar', filename='foo.txt', filecontents=b'bar bat')
     assert events_log_create_result['comment'] == 'foobar'
     assert events_log_create_result['filename'] == 'foo.txt'
 
@@ -66,6 +65,5 @@ def test_integration(client, socket_enabled, coinc_xml_bytes):
         event_id, filename='coinc.xml',
         filecontents=coinc_xml_bytes + b'<!--foobar-->')
 
-    # FIXME: this doesn't work yet
-    # superevents_create_result = client.superevents.create(
-    #     events=[event_id], category='test')
+    superevents_create_result = client.superevents.create(
+        preferred_event=event_id, t_0=1e9, t_start=1e9, t_end=1e9)

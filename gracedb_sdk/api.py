@@ -4,12 +4,16 @@ from os.path import join
 __all__ = ('API',)
 
 
+def str_or_collection(values):
+    if values is None:
+        values = []
+    elif isinstance(values, str):
+        values = [values]
+    return values
+
+
 def field_collection(key, values):
-    if isinstance(values, str):
-        yield key, values
-    elif values is not None:
-        for value in values:
-            yield key, value
+    return [(key, value) for value in str_or_collection(values)]
 
 
 class Resource:
@@ -22,40 +26,45 @@ class Resource:
     def url(self):
         return join(self.parent.url, self.path)
 
-    def create_or_update(self, key, *args, **kwargs):
+    def create_or_update(self, key, **kwargs):
         if key is None:
-            return self.client.post(self.url, *args, **kwargs).json()
+            return self.client.post(self.url, **kwargs).json()
         else:
-            self.client.put(join(self.url, key), *args, **kwargs)
+            self.client.put(join(self.url, key), **kwargs)
 
-    def create(self, *args, **kwargs):
-        return self.create_or_update(None, *args, **kwargs)
+    def create(self, **kwargs):
+        return self.create_or_update(None, **kwargs)
 
-    def update(self, key, *args, **kwargs):
-        return self.create_or_update(key, *args, **kwargs)
+    def update(self, key, **kwargs):
+        return self.create_or_update(key, **kwargs)
 
-    def get(self, *args, **kwargs):
-        return self.client.get(self.url, *args, **kwargs).json()
+    def get(self, **kwargs):
+        return self.client.get(self.url, **kwargs).json()
 
 
 class Log(Resource):
 
     path = 'log/'
 
-    def get(self, *args, **kwargs):
-        return super().get(*args, **kwargs)['log']
+    def get(self, **kwargs):
+        return super().get(**kwargs)['log']
 
-    def create_or_update(self, key,
-                         message, filename=None, filecontents=None, tags=None,
+    def create_or_update(self, key, *,
+                         filename=None, filecontents=None, tags=None,
                          **kwargs):
-        data = (('comment', message),
-                *field_collection('tagname', tags),
+        data = (*field_collection('tagname', tags),
                 *kwargs.items())
+        # FIXME: gracedb server does not support form-encoded input
+        # if there is no file!
         if filename is None and filecontents is None:
+            json = {'tagname': str_or_collection(tags), **kwargs}
+            data = None
             files = None
         else:
+            data = (*field_collection('tagname', tags), *kwargs.items())
+            json = None
             files = {'upload': (filename, filecontents)}
-        return super().create_or_update(key, data=data, files=files)
+        return super().create_or_update(key, data=data, json=json, files=files)
 
 
 class Event(Resource):
@@ -101,6 +110,10 @@ class Superevents(BaseEvents):
         data = (*field_collection('events', events),
                 *field_collection('labels', labels),
                 *kwargs.items())
+        if 'preferred_event' in kwargs:
+            category_map = {'M': 'M', 'T': 'T', 'G': 'P'}
+            category = category_map[kwargs['preferred_event'][0]]
+            data += (('category', category),)
         return super().create_or_update(superevent_id, data=data)
 
 
