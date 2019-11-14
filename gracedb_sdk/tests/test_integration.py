@@ -44,13 +44,13 @@ def test_integration(client, socket_enabled, coinc_xml_bytes):
     events_get_result = client.events[event_id].get()
     assert events_create_result == {**events_get_result, 'warnings': []}
 
-    events_log_result = client.events[event_id].log.get()
-    assert events_log_result[0]['filename'] == 'coinc.xml'
+    events_logs_result = client.events[event_id].logs.get()
+    assert events_logs_result[0]['filename'] == 'coinc.xml'
 
-    events_log_create_result = client.events[event_id].log.create(
+    events_logs_create_result = client.events[event_id].logs.create(
         comment='testing: 1, 2, 3', tags='emfollow')
-    assert events_log_create_result['comment'] == 'testing: 1, 2, 3'
-    assert events_log_create_result['tag_names'] == ['emfollow']
+    assert events_logs_create_result['comment'] == 'testing: 1, 2, 3'
+    assert events_logs_create_result['tag_names'] == ['emfollow']
 
     client.events[event_id].labels.create('SKYMAP_READY')
     client_event_labels_get_result = client.events[event_id].labels.get()
@@ -58,10 +58,14 @@ def test_integration(client, socket_enabled, coinc_xml_bytes):
 
     client.events[event_id].labels.delete('SKYMAP_READY')
 
-    events_log_create_result = client.events[event_id].log.create(
+    events_logs_create_result = client.events[event_id].logs.create(
         comment='foobar', filename='foo.txt', filecontents=b'bar bat')
-    assert events_log_create_result['comment'] == 'foobar'
-    assert events_log_create_result['filename'] == 'foo.txt'
+    assert events_logs_create_result['comment'] == 'foobar'
+    assert events_logs_create_result['filename'] == 'foo.txt'
+
+    n = client.events[event_id].logs.get()[-1]['N']
+    event_logs_tags_get_result = client.events[event_id].logs[n].tags.get()
+    assert event_logs_tags_get_result == []
 
     events_search_result = list(client.events.search(query=event_id))
     assert len(events_search_result) == 1
