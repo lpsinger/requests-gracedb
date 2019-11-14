@@ -52,6 +52,12 @@ def test_integration(client, socket_enabled, coinc_xml_bytes):
     assert events_log_create_result['comment'] == 'testing: 1, 2, 3'
     assert events_log_create_result['tag_names'] == ['emfollow']
 
+    client.events[event_id].labels.create('SKYMAP_READY')
+    client_event_labels_get_result = client.events[event_id].labels.get()
+    assert client_event_labels_get_result[0]['name'] == 'SKYMAP_READY'
+
+    client.events[event_id].labels.delete('SKYMAP_READY')
+
     events_log_create_result = client.events[event_id].log.create(
         comment='foobar', filename='foo.txt', filecontents=b'bar bat')
     assert events_log_create_result['comment'] == 'foobar'

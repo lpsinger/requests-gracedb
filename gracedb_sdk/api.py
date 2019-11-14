@@ -35,6 +35,9 @@ class Resource:
     def create(self, **kwargs):
         return self.create_or_update(None, **kwargs)
 
+    def delete(self, key):
+        self.client.delete(join(self.url, key))
+
     def update(self, key, **kwargs):
         return self.create_or_update(key, **kwargs)
 
@@ -67,12 +70,24 @@ class Log(Resource):
         return super().create_or_update(key, data=data, json=json, files=files)
 
 
+class Labels(Resource):
+
+    path = 'labels/'
+
+    def create(self, label):
+        return super().create_or_update(label)
+
+    def get(self, **kwargs):
+        return super().get(**kwargs)['labels']
+
+
 class Event(Resource):
 
     def __init__(self, parent, path):
         super().__init__(parent)
         self.path = path
         self.log = Log(self)
+        self.labels = Labels(self)
 
 
 class BaseEvents(Resource):
