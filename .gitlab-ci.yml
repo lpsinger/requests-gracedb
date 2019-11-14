@@ -1,0 +1,14 @@
+include:
+  - project: emfollow/gitlab-ci-templates
+    file: lint.yml
+
+test:
+  image: python:slim
+  script:
+    - pip install pytest-cov -r test-requirements.txt
+    - python setup.py test --addopts='--cov --cov-repeort=html --cov-report=term --junit-xml=junit.xml'
+  artifacts:
+    paths:
+      - htmlcov/
+    reports:
+      junit: junit.xml
