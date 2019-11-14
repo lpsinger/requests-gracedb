@@ -1,7 +1,7 @@
-from .base import Resource
+from .base import Deletable
 
 
-class Labels(Resource):
+class Labels(Deletable):
 
     path = 'labels/'
 

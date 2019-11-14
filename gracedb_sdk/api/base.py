@@ -20,14 +20,17 @@ class Resource:
     def create(self, **kwargs):
         return self.create_or_update(None, **kwargs)
 
-    def delete(self, key):
-        self.client.delete(join(self.url, str(key)))
-
     def update(self, key, **kwargs):
         return self.create_or_update(key, **kwargs)
 
     def get(self, **kwargs):
         return self.client.get(self.url, **kwargs).json()
+
+
+class Deletable(Resource):
+
+    def delete(self, key):
+        self.client.delete(join(self.url, str(key)))
 
 
 class HasChildResources(Resource):

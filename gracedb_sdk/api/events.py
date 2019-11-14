@@ -1,3 +1,5 @@
+from os.path import join
+
 from .base import HasChildResources
 from .event import Event, Superevent
 from .util import field_collection
@@ -41,4 +43,10 @@ class Superevents(BaseEvents):
             category_map = {'M': 'M', 'T': 'T', 'G': 'P'}
             category = category_map[kwargs['preferred_event'][0]]
             data += (('category', category),)
-        return super().create_or_update(superevent_id, data=data)
+        if superevent_id is None:
+            return super().create_or_update(superevent_id, data=data)
+        else:
+            # FIXME: GraceDB does not support 'put' here, only 'patch'!
+            # This is inconsistent between events and superevents.
+            url = join(self.url, superevent_id) + '/'
+            self.client.patch(url, data=data)

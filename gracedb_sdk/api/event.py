@@ -22,3 +22,9 @@ class Event(BaseEvent):
 class Superevent(BaseEvent):
 
     logs_class = SupereventLogs
+
+    # FIXME: GraceDB requires a random / for these URLs!
+    # This is inconsistent between events and superevents.
+    @property
+    def url(self):
+        return super().url + '/'

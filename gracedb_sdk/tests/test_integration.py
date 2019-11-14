@@ -14,8 +14,12 @@ def coinc_xml_bytes():
 
 @pytest.fixture(scope='module')
 def client():
-    with Client('https://gracedb-test.ligo.org/api/') as client:
-        yield client
+    try:
+        client = Client('https://gracedb-test.ligo.org/api/', fail_noauth=True)
+    except ValueError:
+        pytest.skip('no GraceDB credentials found')
+    yield client
+    client.close()
 
 
 @pytest.mark.parametrize('labels_in,labels_out', [
@@ -27,56 +31,127 @@ def client():
     [None, []],
     [[], []]
 ])
-def test_labels(client, socket_enabled, coinc_xml_bytes,
-                labels_in, labels_out):
-    events_create_result = client.events.create(
+def test_events_create(client, socket_enabled, coinc_xml_bytes,
+                       labels_in, labels_out):
+    result = client.events.create(
         filename='coinc.xml', filecontents=coinc_xml_bytes,
         group='Test', pipeline='gstlal', labels=labels_in)
-    assert set(events_create_result['labels']) == set(labels_out)
+    assert set(result['labels']) == set(labels_out)
 
 
-def test_integration(client, socket_enabled, coinc_xml_bytes):
-    events_create_result = client.events.create(
+@pytest.fixture
+def events_create(client, socket_enabled, coinc_xml_bytes):
+    return client.events.create(
         filename='coinc.xml', filecontents=coinc_xml_bytes,
         group='Test', pipeline='gstlal')
-    event_id = events_create_result['graceid']
 
-    events_get_result = client.events[event_id].get()
-    assert events_create_result == {**events_get_result, 'warnings': []}
 
-    events_logs_result = client.events[event_id].logs.get()
-    assert events_logs_result[0]['filename'] == 'coinc.xml'
+def test_events_get(client, events_create):
+    event_id = events_create['graceid']
+    result = client.events[event_id].get()
+    assert events_create == {**result, 'warnings': []}
 
-    events_logs_create_result = client.events[event_id].logs.create(
-        comment='testing: 1, 2, 3', tags='emfollow')
-    assert events_logs_create_result['comment'] == 'testing: 1, 2, 3'
-    assert events_logs_create_result['tag_names'] == ['emfollow']
 
-    client.events[event_id].labels.create('SKYMAP_READY')
-    client_event_labels_get_result = client.events[event_id].labels.get()
-    assert client_event_labels_get_result[0]['name'] == 'SKYMAP_READY'
-
-    client.events[event_id].labels.delete('SKYMAP_READY')
-
-    events_logs_create_result = client.events[event_id].logs.create(
-        comment='foobar', filename='foo.txt', filecontents=b'bar bat')
-    assert events_logs_create_result['comment'] == 'foobar'
-    assert events_logs_create_result['filename'] == 'foo.txt'
-
-    n = client.events[event_id].logs.get()[-1]['N']
-    event_logs_tags_get_result = client.events[event_id].logs[n].tags.get()
-    assert event_logs_tags_get_result == []
-    client.events[event_id].logs[n].tags.create('p_astro')
-    event_logs_tags_get_result = client.events[event_id].logs[n].tags.get()
-    assert event_logs_tags_get_result[0]['name'] == 'p_astro'
-
-    events_search_result = list(client.events.search(query=event_id))
-    assert len(events_search_result) == 1
-    assert events_get_result == events_search_result[0]
-
+def test_events_update(client, events_create, coinc_xml_bytes):
+    event_id = events_create['graceid']
     client.events.update(
         event_id, filename='coinc.xml',
         filecontents=coinc_xml_bytes + b'<!--foobar-->')
 
-    superevents_create_result = client.superevents.create(
+
+def test_events_search(client, events_create):
+    event_id = events_create['graceid']
+    result = list(client.events.search(query=event_id))
+    assert len(result) == 1
+    assert events_create == {**result[0], 'warnings': []}
+
+
+@pytest.fixture
+def labels_create(client, events_create):
+    event_id = events_create['graceid']
+    return client.events[event_id].labels.create('SKYMAP_READY')
+
+
+def test_events_labels_create(client, events_create, labels_create):
+    event_id = events_create['graceid']
+    result = client.events[event_id].labels.get()
+    assert result[0]['name'] == 'SKYMAP_READY'
+
+
+def test_events_labels_delete(client, events_create, labels_create):
+    event_id = events_create['graceid']
+    client.events[event_id].labels.delete('SKYMAP_READY')
+    result = client.events[event_id].labels.get()
+    assert len(result) == 0
+
+
+@pytest.mark.parametrize('filename,filecontents', [
+    [None, None],
+    ['foo.txt', 'bar']
+])
+@pytest.mark.parametrize('tags_in,tags_out', [
+    [['emfollow', 'p_astro'],
+    ['emfollow', 'p_astro']], ['emfollow', ['emfollow']], [None, []]
+])
+def test_events_logs_create(client, events_create, filename, filecontents,
+                            tags_in, tags_out):
+    event_id = events_create['graceid']
+    result = client.events[event_id].logs.create(
+        comment='plugh', filename=filename, filecontents=filecontents,
+        tags=tags_in)
+    if filename is None:
+        assert result['filename'] == ''
+    else:
+        assert result['filename'] == filename
+    assert set(result['tag_names']) == set(tags_out)
+
+
+def test_events_logs_get(client, events_create):
+    event_id = events_create['graceid']
+    result = client.events[event_id].logs.get()
+    assert result[0]['filename'] == 'coinc.xml'
+
+
+@pytest.fixture
+def events_logs_tags_create(client, events_create):
+    event_id = events_create['graceid']
+    client.events[event_id].logs[1].tags.create('em_bright')
+
+
+def test_events_logs_tags_create(client, events_create,
+                                 events_logs_tags_create):
+    event_id = events_create['graceid']
+    result = client.events[event_id].logs[1].tags.get()
+    assert result[0]['name'] == 'em_bright'
+
+
+def test_events_logs_tags_delete(client, events_create,
+                                 events_logs_tags_create):
+    event_id = events_create['graceid']
+    client.events[event_id].logs[1].tags.delete('em_bright')
+    result = client.events[event_id].logs[1].tags.get()
+    assert len(result) == 0
+
+
+@pytest.fixture
+def superevents_create(client, events_create):
+    event_id = events_create['graceid']
+    return client.superevents.create(
         preferred_event=event_id, t_0=1e9, t_start=1e9, t_end=1e9)
+
+
+def test_superevents_create(client, events_create, superevents_create):
+    event_id = events_create['graceid']
+    assert superevents_create['preferred_event'] == event_id
+    assert superevents_create['t_start'] == 1e9
+    assert superevents_create['t_0'] == 1e9
+    assert superevents_create['t_end'] == 1e9
+
+
+def test_superevents_update(client, superevents_create):
+    superevent_id = superevents_create['superevent_id']
+    client.superevents.update(superevent_id, t_start=123, t_0=456, t_end=789)
+    result = client.superevents[superevent_id].get()
+    assert result['t_start'] == 123
+    assert result['t_0'] == 456
+    assert result['t_end'] == 789

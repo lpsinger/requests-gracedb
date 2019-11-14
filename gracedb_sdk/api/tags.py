@@ -1,10 +1,10 @@
-from .base import Resource
+from .base import Deletable
 
 
 # FIXME: events have a 'tag/' resource whereas superevents have 'tags/'.
 # Combine BaseTags, EventTags, and SupereventTags into a single Log class
 # once this inconsistency has been fixed.
-class BaseTags(Resource):
+class BaseTags(Deletable):
 
     def create(self, tag):
         return super().create_or_update(tag)
