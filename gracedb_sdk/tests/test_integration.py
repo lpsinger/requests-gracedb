@@ -66,6 +66,9 @@ def test_integration(client, socket_enabled, coinc_xml_bytes):
     n = client.events[event_id].logs.get()[-1]['N']
     event_logs_tags_get_result = client.events[event_id].logs[n].tags.get()
     assert event_logs_tags_get_result == []
+    client.events[event_id].logs[n].tags.create('p_astro')
+    event_logs_tags_get_result = client.events[event_id].logs[n].tags.get()
+    assert event_logs_tags_get_result[0]['name'] == 'p_astro'
 
     events_search_result = list(client.events.search(query=event_id))
     assert len(events_search_result) == 1
