@@ -1,4 +1,6 @@
-from .base import ChildResource
+from os.path import join
+
+from .base import Deletable, ChildResource
 from .logs import EventLogs, SupereventLogs
 from .labels import Labels
 
@@ -23,8 +25,23 @@ class Superevent(BaseEvent):
 
     logs_class = SupereventLogs
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._events = SupereventEventList(self)
+
     # FIXME: GraceDB requires a random / for these URLs!
     # This is inconsistent between events and superevents.
     @property
     def url(self):
         return super().url + '/'
+
+    def add(self, event_id):
+        self._events.create(data={'event': event_id})
+
+    def remove(self, event_id):
+        self._events.delete(event_id)
+
+
+class SupereventEventList(Deletable):
+
+    path = 'events/'

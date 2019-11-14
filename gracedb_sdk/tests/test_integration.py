@@ -155,3 +155,36 @@ def test_superevents_update(client, superevents_create):
     assert result['t_start'] == 123
     assert result['t_0'] == 456
     assert result['t_end'] == 789
+
+
+@pytest.fixture
+def events_create_2(client, socket_enabled, coinc_xml_bytes):
+    return client.events.create(
+        filename='coinc.xml', filecontents=coinc_xml_bytes,
+        group='Test', pipeline='gstlal')
+
+
+@pytest.fixture
+def superevents_add(client, superevents_create, events_create_2):
+    event_id_2 = events_create_2['graceid']
+    superevent_id = superevents_create['superevent_id']
+    client.superevents[superevent_id].add(event_id_2)
+
+
+def test_superevents_add(client, superevents_add, superevents_create,
+                         events_create, events_create_2):
+    event_id = events_create['graceid']
+    event_id_2 = events_create_2['graceid']
+    superevent_id = superevents_create['superevent_id']
+    result = client.superevents[superevent_id].get()
+    assert set(result['gw_events']) == {event_id, event_id_2}
+
+
+def test_superevents_remove(client, superevents_add, superevents_create,
+                            events_create, events_create_2):
+    event_id = events_create['graceid']
+    event_id_2 = events_create_2['graceid']
+    superevent_id = superevents_create['superevent_id']
+    client.superevents[superevent_id].remove(event_id_2)
+    result = client.superevents[superevent_id].get()
+    assert set(result['gw_events']) == {event_id}
