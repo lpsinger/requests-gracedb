@@ -90,8 +90,9 @@ def test_events_labels_delete(client, events_create, labels_create):
     ['foo.txt', 'bar']
 ])
 @pytest.mark.parametrize('tags_in,tags_out', [
-    [['emfollow', 'p_astro'],
-    ['emfollow', 'p_astro']], ['emfollow', ['emfollow']], [None, []]
+    [['emfollow', 'p_astro'], ['emfollow', 'p_astro']],
+    ['emfollow', ['emfollow']],
+    [None, []]
 ])
 def test_events_logs_create(client, events_create, filename, filecontents,
                             tags_in, tags_out):
