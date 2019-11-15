@@ -1,5 +1,3 @@
-from os.path import join
-
 from .base import Deletable, ChildResource
 from .files import Files
 from .logs import EventLogs, SupereventLogs
