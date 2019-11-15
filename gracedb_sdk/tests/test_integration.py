@@ -183,6 +183,19 @@ def test_superevents_create(client, events_create, superevents_create):
     assert superevents_create['t_end'] == 1e9
 
 
+def test_superevents_get(client, superevents_create):
+    superevent_id = superevents_create['superevent_id']
+    result = client.superevents[superevent_id].get()
+    assert superevents_create == result
+
+
+def test_superevents_search(client, superevents_create):
+    superevent_id = superevents_create['superevent_id']
+    query = f'{superevent_id} category: Test'
+    result = list(client.superevents.search(query=query))
+    assert [superevents_create] == result
+
+
 def test_superevents_update(client, superevents_create):
     superevent_id = superevents_create['superevent_id']
     client.superevents.update(superevent_id, t_start=123, t_0=456, t_end=789)

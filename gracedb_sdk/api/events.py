@@ -13,7 +13,7 @@ class BaseEvents(HasChildResources):
             response = self.client.get(url, params=kwargs).json()
             url = response.get('links', {}).get('next')
             kwargs = None
-            yield from response.get('events', [])
+            yield from response.get(self.path.strip('/'), [])
 
 
 class Events(BaseEvents):
