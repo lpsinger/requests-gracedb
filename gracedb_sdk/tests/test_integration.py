@@ -361,9 +361,9 @@ def test_superevents_voevents_get(client, superevents_create,
 def test_superevents_expose(client, superevents_create):
     superevent_id = superevents_create['superevent_id']
     client.superevents[superevent_id].expose()
-    assert client.superevents[superevent_id].is_exposed() == True
+    assert client.superevents[superevent_id].is_exposed()
     client.superevents[superevent_id].unexpose()
-    assert client.superevents[superevent_id].is_exposed() == False
+    assert not client.superevents[superevent_id].is_exposed()
 
 
 @pytest.mark.parametrize('status', ['OK', 'NO'])
