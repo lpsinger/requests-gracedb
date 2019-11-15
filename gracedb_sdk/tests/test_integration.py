@@ -151,21 +151,23 @@ def test_events_logs_tags_delete(client, events_create,
 
 
 @pytest.fixture
-def events_voevent_create(client, events_create):
+def events_voevents_create(client, events_create):
     event_id = events_create['graceid']
     return client.events[event_id].voevents.create(voevent_type='preliminary')
 
 
-def test_events_voevents_create(client, events_create, events_voevent_create):
+def test_events_voevents_create(client, events_create, events_voevents_create):
     event_id = events_create['graceid']
-    assert events_voevent_create['filename'] == f'{event_id}-1-Preliminary.xml'
+    filename = f'{event_id}-1-Preliminary.xml'
+    assert events_voevents_create['filename'] == filename
 
 
-def test_events_voevents_get(client, events_create, events_voevent_create):
+def test_events_voevents_get(client, events_create, events_voevents_create):
     event_id = events_create['graceid']
     result = client.events[event_id].voevents.get()
     assert len(result) == 1
-    assert result[0]['filename'] == f'{event_id}-1-Preliminary.xml'
+    filename = f'{event_id}-1-Preliminary.xml'
+    assert result[0]['filename'] == filename
 
 
 @pytest.fixture
@@ -236,3 +238,120 @@ def test_superevents_remove(client, superevents_add, superevents_create,
     client.superevents[superevent_id].remove(event_id_2)
     result = client.superevents[superevent_id].get()
     assert set(result['gw_events']) == {event_id}
+
+
+@pytest.fixture
+def superevents_labels_create(client, superevents_create):
+    superevent_id = superevents_create['superevent_id']
+    return client.superevents[superevent_id].labels.create('SKYMAP_READY')
+
+
+def test_superevents_superevents_labels_create(client, superevents_create,
+                                               superevents_labels_create):
+    superevent_id = superevents_create['superevent_id']
+    result = client.superevents[superevent_id].labels.get()
+    assert result[0]['name'] == 'SKYMAP_READY'
+
+
+def test_superevents_labels_delete(client, superevents_create,
+                                   superevents_labels_create):
+    superevent_id = superevents_create['superevent_id']
+    client.superevents[superevent_id].labels.delete('SKYMAP_READY')
+    result = client.superevents[superevent_id].labels.get()
+    assert len(result) == 0
+
+
+@pytest.mark.parametrize('filename,filecontents', [
+    [None, None],
+    ['foo.txt', 'bar']
+])
+@pytest.mark.parametrize('tags_in,tags_out', [
+    [['emfollow', 'p_astro'], ['emfollow', 'p_astro']],
+    ['emfollow', ['emfollow']],
+    [None, []]
+])
+def test_superevents_logs_create(client, superevents_create, filename,
+                                 filecontents, tags_in, tags_out):
+    superevent_id = superevents_create['superevent_id']
+    result = client.superevents[superevent_id].logs.create(
+        comment='plugh', filename=filename, filecontents=filecontents,
+        tags=tags_in)
+    if filename is None:
+        assert result['filename'] == ''
+    else:
+        assert result['filename'] == filename
+    assert set(result['tag_names']) == set(tags_out)
+
+
+@pytest.fixture
+def superevents_logs_create(client, superevents_create):
+    superevent_id = superevents_create['superevent_id']
+    return client.superevents[superevent_id].logs.create(
+        comment='plugh', filename='foo.txt', filecontents='bar')
+
+
+def test_superevents_logs_get(client, superevents_create,
+                              superevents_logs_create):
+    superevent_id = superevents_create['superevent_id']
+    result = client.superevents[superevent_id].logs.get()
+    assert result[-1]['filename'] == 'foo.txt'
+
+
+def test_superevents_files_get(client, superevents_create,
+                               superevents_logs_create):
+    superevent_id = superevents_create['superevent_id']
+    result = client.superevents[superevent_id].files.get()
+    assert 'foo.txt' in result
+
+
+def test_superevents_files_file_get(client, superevents_create,
+                                    superevents_logs_create):
+    superevent_id = superevents_create['superevent_id']
+    with client.superevents[superevent_id].files['foo.txt'].get() as f:
+        filecontents = f.read()
+    assert filecontents == b'bar'
+
+
+@pytest.fixture
+def superevents_logs_tags_create(client, superevents_create,
+                                 superevents_logs_create):
+    superevent_id = superevents_create['superevent_id']
+    client.superevents[superevent_id].logs[1].tags.create('em_bright')
+
+
+def test_superevents_logs_tags_create(client, superevents_create,
+                                      superevents_logs_tags_create):
+    superevent_id = superevents_create['superevent_id']
+    result = client.superevents[superevent_id].logs[1].tags.get()
+    assert result[0]['name'] == 'em_bright'
+
+
+def test_superevents_logs_tags_delete(client, superevents_create,
+                                      superevents_logs_tags_create):
+    superevent_id = superevents_create['superevent_id']
+    client.superevents[superevent_id].logs[1].tags.delete('em_bright')
+    result = client.superevents[superevent_id].logs[1].tags.get()
+    assert len(result) == 0
+
+
+@pytest.fixture
+def superevents_voevents_create(client, superevents_create):
+    superevent_id = superevents_create['superevent_id']
+    return client.superevents[superevent_id].voevents.create(
+        voevent_type='preliminary')
+
+
+def test_superevents_voevents_create(client, superevents_create,
+                                     superevents_voevents_create):
+    superevent_id = superevents_create['superevent_id']
+    filename = f'{superevent_id}-1-Preliminary.xml'
+    assert superevents_voevents_create['filename'] == filename
+
+
+def test_superevents_voevents_get(client, superevents_create,
+                                  superevents_voevents_create):
+    superevent_id = superevents_create['superevent_id']
+    result = client.superevents[superevent_id].voevents.get()
+    filename = f'{superevent_id}-1-Preliminary.xml'
+    assert len(result) == 1
+    assert result[0]['filename'] == filename

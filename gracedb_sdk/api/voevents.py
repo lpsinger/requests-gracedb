@@ -6,6 +6,7 @@ VOEVENT_TYPES = {'preliminary': 'PR',
                  'update': 'UP',
                  'initial': 'IN'}
 
+
 # FIXME: events have a 'event/' resource whereas superevents have 'events/'.
 # Combine BaseVOEvents, EventVOEvents, and SupereventVOEvents into a single
 # VOEvents class once this inconsistency has been fixed.
@@ -21,7 +22,7 @@ class BaseVOEvents(Resource):
 
     def get(self, **kwargs):
         return super().get(**kwargs)['voevents']
-        
+
 
 class EventVOEvents(BaseVOEvents):
 

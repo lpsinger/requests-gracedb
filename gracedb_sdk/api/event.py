@@ -2,7 +2,7 @@ from .base import Deletable, ChildResource
 from .files import Files
 from .voevents import EventVOEvents, SupereventVOEvents
 from .logs import EventLogs, SupereventLogs
-from .labels import Labels
+from .labels import EventLabels, SupereventLabels
 
 
 # FIXME: events have a 'log/' resource whereas superevents have 'logs/'.
@@ -14,18 +14,20 @@ class BaseEvent(ChildResource):
         super().__init__(*args, **kwargs)
         self.files = Files(self)
         self.logs = self.logs_class(self)
-        self.labels = Labels(self)
+        self.labels = self.labels_class(self)
         self.voevents = self.voevent_class(self)
 
 
 class Event(BaseEvent):
 
+    labels_class = EventLabels
     logs_class = EventLogs
     voevent_class = EventVOEvents
 
 
 class Superevent(BaseEvent):
 
+    labels_class = SupereventLabels
     logs_class = SupereventLogs
     voevent_class = SupereventVOEvents
 
