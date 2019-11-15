@@ -8,8 +8,22 @@ test:
   script:
     - pip install pytest-cov -r test-requirements.txt
     - python setup.py test --addopts='--cov --cov-report=html --cov-report=term --junit-xml=junit.xml -vv'
+  coverage: '/^TOTAL\s+.*\s+(\d+\.?\d*)%/'
   artifacts:
     paths:
       - htmlcov/
     reports:
       junit: junit.xml
+
+pages:
+  stage: deploy
+  script:
+    - mv htmlcov public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  only:
+    - master
+  dependencies:
+    - test
