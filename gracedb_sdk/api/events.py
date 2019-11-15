@@ -22,8 +22,8 @@ class Events(BaseEvents):
     child_class = Event
 
     def create_or_update(self, event_id, *,
-                         filename=None, filecontents=None, labels=None,
-                         **kwargs):
+                         filename='initial.data',
+                         filecontents=None, labels=None, **kwargs):
         data = (*field_collection('labels', labels), *kwargs.items())
         files = {'eventFile': (filename, filecontents)}
         return super().create_or_update(event_id, data=data, files=files)
