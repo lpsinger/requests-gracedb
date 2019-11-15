@@ -67,18 +67,19 @@ def test_events_search(client, events_create):
 
 
 @pytest.fixture
-def labels_create(client, events_create):
+def events_labels_create(client, events_create):
     event_id = events_create['graceid']
     return client.events[event_id].labels.create('SKYMAP_READY')
 
 
-def test_events_labels_create(client, events_create, labels_create):
+def test_events_events_labels_create(client, events_create,
+                                     events_labels_create):
     event_id = events_create['graceid']
     result = client.events[event_id].labels.get()
     assert result[0]['name'] == 'SKYMAP_READY'
 
 
-def test_events_labels_delete(client, events_create, labels_create):
+def test_events_labels_delete(client, events_create, events_labels_create):
     event_id = events_create['graceid']
     client.events[event_id].labels.delete('SKYMAP_READY')
     result = client.events[event_id].labels.get()
