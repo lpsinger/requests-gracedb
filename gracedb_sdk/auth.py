@@ -1,4 +1,5 @@
 import os
+from os import getuid
 from urllib.parse import urlparse
 from warnings import warn
 
@@ -25,7 +26,7 @@ def find_x509_credentials():
         return proxy_file
 
     # Try default proxy
-    proxy_file = os.path.join('/tmp', 'x509up_u{}'.format(os.getuid()))
+    proxy_file = os.path.join('/tmp', 'x509up_u{}'.format(getuid()))
     if os.path.exists(proxy_file):
         return proxy_file
 

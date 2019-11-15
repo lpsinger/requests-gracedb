@@ -1,5 +1,6 @@
 """Tests for :mod:`gracedb_sdk.auth`."""
 import os
+import random
 import stat
 
 import pytest
@@ -88,7 +89,63 @@ def test_x509_default_proxy(monkeypatch, x509_proxy):
     assert client.cert == x509_proxy
 
 
-def test_basic_default(monkeypatch, tmpdir):
+@pytest.fixture
+def x509up_exists(monkeypatch):
+    while True:
+        uid = random.randint(1000, 10000000)
+        filename = f'/tmp/x509up_u{uid}'
+        try:
+            with open(filename, 'xb') as f:
+                set_rwx_user(f)
+        except FileExistsError:
+            continue
+        else:
+            break
+    monkeypatch.setattr('gracedb_sdk.auth.getuid', lambda: uid)
+    yield filename
+    os.remove(filename)
+
+
+@pytest.fixture
+def x509up_does_not_exist(monkeypatch):
+    while True:
+        uid = random.randint(1000, 10000000)
+        filename = f'/tmp/x509up_u{uid}'
+        if not os.path.exists(filename):
+            break
+    monkeypatch.setattr('gracedb_sdk.auth.getuid', lambda: uid)
+    return filename
+
+
+def test_x509_default_x509up(monkeypatch, tmpdir, x509up_exists):
+    """Test X.509 auth provided through ~/.globus/user{cert,key}.pem."""
+    monkeypatch.delenv('X509_USER_CERT', raising=False)
+    monkeypatch.delenv('X509_USER_KEY', raising=False)
+    monkeypatch.delenv('X509_USER_PROXY', raising=False)
+    monkeypatch.setenv('HOME', str(tmpdir))
+    client = Client()
+    assert client.auth is None
+    assert client.cert == x509up_exists
+
+
+def test_x509_default_globus(monkeypatch, tmpdir, x509up_does_not_exist):
+    """Test X.509 auth provided through ~/.globus/user{cert,key}.pem."""
+    monkeypatch.delenv('X509_USER_CERT', raising=False)
+    monkeypatch.delenv('X509_USER_KEY', raising=False)
+    monkeypatch.delenv('X509_USER_PROXY', raising=False)
+    monkeypatch.setenv('HOME', str(tmpdir))
+    os.mkdir(str(tmpdir / '.globus'))
+    filenames = ['usercert.pem', 'userkey.pem']
+    filepaths = [str(tmpdir / '.globus' / filename) for filename in filenames]
+    for path in filepaths:
+        with open(path, 'wb') as f:
+            set_rwx_user(f)
+    client = Client()
+    assert client.auth is None
+    assert client.cert == tuple(filepaths)
+
+
+def test_basic_default(monkeypatch, tmpdir, x509up_does_not_exist):
     """Test basic auth provided through a netrc file."""
     filename = str(tmpdir / 'netrc')
     with open(filename, 'w') as f:
@@ -99,20 +156,18 @@ def test_basic_default(monkeypatch, tmpdir):
     monkeypatch.delenv('X509_USER_CERT', raising=False)
     monkeypatch.delenv('X509_USER_KEY', raising=False)
     monkeypatch.delenv('X509_USER_PROXY', raising=False)
-    monkeypatch.setattr('gracedb_sdk.auth.find_x509_credentials',
-                        lambda: None)
+    monkeypatch.setenv('HOME', str(tmpdir))
     client = Client()
     assert client.auth == ('albert.einstein', 'super-secret')
     assert client.cert is None
 
 
-def test_fail_noauth(monkeypatch, tmpdir):
+def test_fail_noauth(monkeypatch, tmpdir, x509up_does_not_exist):
     monkeypatch.setenv('NETRC', str(tmpdir / 'netrc'))
     monkeypatch.delenv('X509_USER_CERT', raising=False)
     monkeypatch.delenv('X509_USER_KEY', raising=False)
     monkeypatch.delenv('X509_USER_PROXY', raising=False)
-    monkeypatch.setattr('gracedb_sdk.auth.find_x509_credentials',
-                        lambda: None)
+    monkeypatch.setenv('HOME', str(tmpdir))
     client = Client()
     assert client.auth is None
     assert client.cert is None
