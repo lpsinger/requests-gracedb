@@ -1,5 +1,6 @@
 from .base import Deletable, ChildResource
 from .files import Files
+from .voevents import EventVOEvents, SupereventVOEvents
 from .logs import EventLogs, SupereventLogs
 from .labels import Labels
 
@@ -14,16 +15,19 @@ class BaseEvent(ChildResource):
         self.files = Files(self)
         self.logs = self.logs_class(self)
         self.labels = Labels(self)
+        self.voevents = self.voevent_class(self)
 
 
 class Event(BaseEvent):
 
     logs_class = EventLogs
+    voevent_class = EventVOEvents
 
 
 class Superevent(BaseEvent):
 
     logs_class = SupereventLogs
+    voevent_class = SupereventVOEvents
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

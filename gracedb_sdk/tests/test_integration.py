@@ -150,6 +150,24 @@ def test_events_logs_tags_delete(client, events_create,
 
 
 @pytest.fixture
+def events_voevent_create(client, events_create):
+    event_id = events_create['graceid']
+    return client.events[event_id].voevents.create(voevent_type='preliminary')
+
+
+def test_events_voevents_create(client, events_create, events_voevent_create):
+    event_id = events_create['graceid']
+    assert events_voevent_create['filename'] == f'{event_id}-1-Preliminary.xml'
+
+
+def test_events_voevents_get(client, events_create, events_voevent_create):
+    event_id = events_create['graceid']
+    result = client.events[event_id].voevents.get()
+    assert len(result) == 1
+    assert result[0]['filename'] == f'{event_id}-1-Preliminary.xml'
+
+
+@pytest.fixture
 def superevents_create(client, events_create):
     event_id = events_create['graceid']
     return client.superevents.create(

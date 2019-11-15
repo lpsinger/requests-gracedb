@@ -21,7 +21,7 @@ class Events(BaseEvents):
     path = 'events/'
     child_class = Event
 
-    def create_or_update(self, event_id,
+    def create_or_update(self, event_id, *,
                          filename=None, filecontents=None, labels=None,
                          **kwargs):
         data = (*field_collection('labels', labels), *kwargs.items())
@@ -29,19 +29,21 @@ class Events(BaseEvents):
         return super().create_or_update(event_id, data=data, files=files)
 
 
+SUPEREVENT_CATEGORIES = {'M': 'M', 'T': 'T', 'G': 'P'}
+
+
 class Superevents(BaseEvents):
 
     path = 'superevents/'
     child_class = Superevent
 
-    def create_or_update(self, superevent_id,
+    def create_or_update(self, superevent_id, *,
                          events=None, labels=None, **kwargs):
         data = (*field_collection('events', events),
                 *field_collection('labels', labels),
                 *kwargs.items())
         if 'preferred_event' in kwargs:
-            category_map = {'M': 'M', 'T': 'T', 'G': 'P'}
-            category = category_map[kwargs['preferred_event'][0]]
+            category = SUPEREVENT_CATEGORIES[kwargs['preferred_event'][0]]
             data += (('category', category),)
         if superevent_id is None:
             return super().create_or_update(superevent_id, data=data)
