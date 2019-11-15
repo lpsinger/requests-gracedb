@@ -98,9 +98,12 @@ class Client(API, SessionFileMixin, SessionAuthMixin, Session):
     * :samp:`client.superevents.get()`
     * :samp:`client.superevents.search(query={query}, sort={sort})`
     * :samp:`client.superevents.create(t_start={t_start}, t_0={t_0}, t_end={t_end}, preferred_event={preferred_event}, events={events}, labels={labels})`
+    * :samp:`client.superevents[{superevent_id}].update(t_start={t_start}, t_0={t_0}, t_end={t_end}, preferred_event={preferred_event})`
     * :samp:`client.superevents[{superevent_id}].add({event_id})`
     * :samp:`client.superevents[{superevent_id}].remove({event_id})`
-    * :samp:`client.superevents[{superevent_id}].update(t_start={t_start}, t_0={t_0}, t_end={t_end}, preferred_event={preferred_event})`
+    * :samp:`client.superevents[{superevent_id}].is_exposed()`
+    * :samp:`client.superevents[{superevent_id}].expose()`
+    * :samp:`client.superevents[{superevent_id}].unexpose()`
     * :samp:`client.superevents[{superevent_id}].get()`
     * :samp:`client.superevents[{superevent_id}].files.get()`
     * :samp:`client.superevents[{superevent_id}].files[{filename}].get()`

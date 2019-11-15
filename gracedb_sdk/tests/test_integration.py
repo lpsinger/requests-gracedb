@@ -355,3 +355,11 @@ def test_superevents_voevents_get(client, superevents_create,
     filename = f'{superevent_id}-1-Preliminary.xml'
     assert len(result) == 1
     assert result[0]['filename'] == filename
+
+
+def test_superevents_expose(client, superevents_create):
+    superevent_id = superevents_create['superevent_id']
+    client.superevents[superevent_id].expose()
+    assert client.superevents[superevent_id].is_exposed() == True
+    client.superevents[superevent_id].unexpose()
+    assert client.superevents[superevent_id].is_exposed() == False

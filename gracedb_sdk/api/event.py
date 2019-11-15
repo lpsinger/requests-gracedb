@@ -1,3 +1,5 @@
+from os.path import join
+
 from .base import Deletable, ChildResource
 from .files import Files
 from .voevents import EventVOEvents, SupereventVOEvents
@@ -46,6 +48,25 @@ class Superevent(BaseEvent):
 
     def remove(self, event_id):
         self._events.delete(event_id)
+
+    def _modify_permissions(self, action):
+        url = join(self.url, 'permissions/modify/')
+        self.client.post(url, data={'action': action})
+
+    def is_exposed(self):
+        url = join(self.url, 'permissions/')
+        result = self.client.get(url).json()
+        for row in result['permissions']:
+            if row['group'] == 'public_users' \
+                    and row['permission'] == 'view_superevent':
+                return True
+        return False
+
+    def expose(self):
+        self._modify_permissions('expose')
+
+    def unexpose(self):
+        self._modify_permissions('hide')
 
 
 class SupereventEventList(Deletable):
