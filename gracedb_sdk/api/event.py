@@ -27,6 +27,9 @@ class Event(BaseEvent):
     voevent_class = EventVOEvents
 
 
+SIGNOFF_INSTRUMENTS = ['H1', 'L1', 'V1']
+
+
 class Superevent(BaseEvent):
 
     labels_class = SupereventLabels
@@ -67,6 +70,17 @@ class Superevent(BaseEvent):
 
     def unexpose(self):
         self._modify_permissions('hide')
+
+    def signoff(self, signoff_type, status, comment=''):
+        url = join(self.url, 'signoffs/')
+        data = {'status': status, 'comment': comment}
+        if signoff_type in SIGNOFF_INSTRUMENTS:
+            data['signoff_type'] = 'OP'
+            data['instrument'] = signoff_type
+        else:
+            data['signoff_type'] = signoff_type
+            data['instrument'] = ''
+        self.client.post(url, data=data)
 
 
 class SupereventEventList(Deletable):

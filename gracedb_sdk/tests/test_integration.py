@@ -2,6 +2,7 @@
 import pkgutil
 import os
 
+from requests.exceptions import HTTPError
 import pytest
 
 from .. import Client
@@ -363,3 +364,23 @@ def test_superevents_expose(client, superevents_create):
     assert client.superevents[superevent_id].is_exposed() == True
     client.superevents[superevent_id].unexpose()
     assert client.superevents[superevent_id].is_exposed() == False
+
+
+@pytest.mark.parametrize('status', ['OK', 'NO'])
+def test_superevents_signoff_operator(client, superevents_create, status):
+    superevent_id = superevents_create['superevent_id']
+
+    # We generally don't have permission to do operator signoffs.
+    with pytest.raises(HTTPError) as exc_info:
+        client.superevents[superevent_id].signoff('H1', status, comment='foo')
+    assert exc_info.value.response.status_code == 403
+
+
+@pytest.mark.parametrize('status', ['OK', 'NO'])
+def test_superevents_signoff_advocate(client, superevents_create, status):
+    superevent_id = superevents_create['superevent_id']
+    client.superevents[superevent_id].labels.create('ADVREQ')
+    client.superevents[superevent_id].signoff('ADV', status, comment='foo')
+    result = client.superevents[superevent_id].labels.get()
+    labels = {row['name'] for row in result}
+    assert 'ADV' + status in labels

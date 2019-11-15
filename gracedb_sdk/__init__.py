@@ -104,6 +104,7 @@ class Client(API, SessionFileMixin, SessionAuthMixin, Session):
     * :samp:`client.superevents[{superevent_id}].is_exposed()`
     * :samp:`client.superevents[{superevent_id}].expose()`
     * :samp:`client.superevents[{superevent_id}].unexpose()`
+    * :samp:`client.superevents[{superevent_id}].signoff({'ADV'|'H1'|'L1'|'V1'}, {'OK'|'NO'}, {comment})`
     * :samp:`client.superevents[{superevent_id}].get()`
     * :samp:`client.superevents[{superevent_id}].files.get()`
     * :samp:`client.superevents[{superevent_id}].files[{filename}].get()`
