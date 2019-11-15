@@ -1,6 +1,7 @@
 from os.path import join
 
 from .base import Deletable, ChildResource
+from .files import Files
 from .logs import EventLogs, SupereventLogs
 from .labels import Labels
 
@@ -12,6 +13,7 @@ class BaseEvent(ChildResource):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.files = Files(self)
         self.logs = self.logs_class(self)
         self.labels = Labels(self)
 

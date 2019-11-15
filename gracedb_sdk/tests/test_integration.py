@@ -112,6 +112,21 @@ def test_events_logs_get(client, events_create):
     assert result[0]['filename'] == 'coinc.xml'
 
 
+def test_events_files_get(client, events_create):
+    event_id = events_create['graceid']
+    result = client.events[event_id].files.get()
+    assert 'coinc.xml' in result
+
+
+def test_events_files_file_get(client, events_create):
+    event_id = events_create['graceid']
+    client.events[event_id].logs.create(
+        comment='plugh', filename='foo.txt', filecontents=b'bar')
+    with client.events[event_id].files['foo.txt'].get() as f:
+        filecontents = f.read()
+    assert filecontents == b'bar'
+
+
 @pytest.fixture
 def events_logs_tags_create(client, events_create):
     event_id = events_create['graceid']
