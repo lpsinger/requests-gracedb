@@ -1,6 +1,6 @@
 # gracedb-sdk
 
-A modern, performant REST API client for GraceDB, based on [Requests](http://python-requests.org/).
+A modern, performant REST API client for GraceDB, based on [Requests](http://python-requests.org/). For documentaton, see https://gracedb-sdk.readthedocs.io.
 
 ## Benchmarks
 
