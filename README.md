@@ -1,0 +1,1 @@
+![benchmarks compared to ligo-gracedb](https://git.ligo.org/emfollow/gracedb-sdk/snippets/92/raw)
