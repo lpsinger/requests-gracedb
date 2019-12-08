@@ -2,7 +2,9 @@ from requests.sessions import Session
 
 from .api import API
 from .auth import SessionAuthMixin
+from .error import SessionErrorMixin
 from .file import SessionFileMixin
+from .user_agent import SessionUserAgentMixin
 
 from ._version import get_versions
 __version__ = get_versions()['version']
@@ -11,12 +13,8 @@ del get_versions
 __all__ = ('Client',)
 
 
-def _hook_raise_errors(response, *args, **kwargs):
-    """Response hook to raise exception for any HTTP error (status >= 400)."""
-    response.raise_for_status()
-
-
-class Client(API, SessionFileMixin, SessionAuthMixin, Session):
+class Client(API, SessionAuthMixin, SessionErrorMixin, SessionFileMixin,
+             SessionUserAgentMixin, Session):
     """GraceDB client session.
 
     Parameters
@@ -126,6 +124,3 @@ class Client(API, SessionFileMixin, SessionAuthMixin, Session):
 
     def __init__(self, url='https://gracedb.ligo.org/api/', *args, **kwargs):
         super().__init__(url, *args, **kwargs)
-        self.url = url
-        self.headers['User-Agent'] = '{}/{}'.format(__name__, __version__)
-        self.hooks['response'].append(_hook_raise_errors)
