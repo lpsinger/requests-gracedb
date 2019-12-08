@@ -1,3 +1,4 @@
+"""Tests for :mod:`gracedb_sdk.errors`."""
 from requests.exceptions import HTTPError
 import pytest
 

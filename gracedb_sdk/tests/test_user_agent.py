@@ -1,3 +1,4 @@
+"""Tests for :mod:`gracedb_sdk.user_agent`."""
 from .. import __version__
 from .. import Client
 
