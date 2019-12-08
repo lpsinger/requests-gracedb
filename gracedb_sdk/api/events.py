@@ -21,6 +21,12 @@ class Events(BaseEvents):
     path = 'events/'
     child_class = Event
 
+    def __getitem__(self, key):
+        if 'S' in key:
+            return self.parent.superevents[key]
+        else:
+            return super()[key]
+
     def create_or_update(self, event_id, *,
                          filename='initial.data',
                          filecontents=None, labels=None, **kwargs):
@@ -36,6 +42,12 @@ class Superevents(BaseEvents):
 
     path = 'superevents/'
     child_class = Superevent
+
+    def __getitem__(self, key):
+        if 'S' not in key:
+            return self.parent.events[key]
+        else:
+            return super()[key]
 
     def create_or_update(self, superevent_id, *,
                          events=None, labels=None, **kwargs):
