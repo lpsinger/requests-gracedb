@@ -123,7 +123,7 @@ def test_events_files_get(client, events_create):
 
 def test_events_files_get_alternate(client, events_create):
     event_id = events_create['graceid']
-    result = client.events[event_id].files.get()
+    result = client.superevents[event_id].files.get()
     assert 'coinc.xml' in result
 
 
