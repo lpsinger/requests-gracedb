@@ -1,7 +1,6 @@
 import os
 from os import getuid
 from urllib.parse import urlparse
-from warnings import warn
 
 from requests import status_codes
 from safe_netrc import netrc
