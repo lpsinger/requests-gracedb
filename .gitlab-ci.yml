@@ -6,7 +6,7 @@ test:
   image: python:slim
   stage: test
   before_script:  # Install robot keytab for integration tests
-    - apt-get update && apt-get install -y --no-install-recommends krb5-user
+    - apt-get update && apt-get install -y curl krb5-user
     # Decode base64-encoded keytab
     - echo "${ROBOT_KEYTAB}" | base64 -d | install -m 0600 /dev/stdin keytab
     # Read principal from first entry in keytab
