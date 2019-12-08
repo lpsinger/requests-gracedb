@@ -42,7 +42,6 @@ class Client(API, SessionAuthMixin, SessionErrorMixin, SessionFileMixin,
 
     Notes
     -----
-
     When a new Client instance is created, the following sources of
     authentication are tried, in order:
 
@@ -120,6 +119,7 @@ class Client(API, SessionAuthMixin, SessionErrorMixin, SessionFileMixin,
     ----------
     .. [1] The .netrc file.
            https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html
+
     """  # noqa: E501
 
     def __init__(self, url='https://gracedb.ligo.org/api/', *args, **kwargs):

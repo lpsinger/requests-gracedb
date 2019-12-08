@@ -5,7 +5,8 @@ def _hook_raise_errors(response, *args, **kwargs):
 
 class SessionErrorMixin:
     """A mixin for :class:`requests.Session` to raise exceptions for HTTP
-    errors."""
+    errors.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

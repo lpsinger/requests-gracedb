@@ -67,7 +67,8 @@ def _hook_warn_basic_auth(response, *args, **kwargs):
 
 class SessionAuthMixin:
     """A mixin for :class:`requests.Session` to add support for all GraceDB
-    authentication mechanisms."""
+    authentication mechanisms.
+    """
 
     def __init__(self, url=None, cert=None, username=None, password=None,
                  force_noauth=False, fail_noauth=False, cert_reload=False,
