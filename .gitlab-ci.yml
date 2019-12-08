@@ -71,4 +71,4 @@ pypi:
     - sdist
     - bdist
   only:
-    - tags@emfollow/gwcelery
+    - tags@emfollow/gracedb-sdk
