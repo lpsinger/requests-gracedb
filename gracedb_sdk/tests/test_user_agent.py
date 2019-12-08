@@ -1,6 +1,5 @@
 from .. import __version__
 from .. import Client
-from .. import _version
 
 
 def test_user_agent(socket_enabled, httpserver):
