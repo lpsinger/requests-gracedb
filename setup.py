@@ -17,7 +17,6 @@ if {'build_sphinx'}.intersection(sys.argv):
 if {'pytest', 'test', 'ptr'}.intersection(sys.argv):
     setup_requires.append('pytest-runner')
 
-setup(install_requires=get_requirements('requirements.txt'),
-      setup_requires=setup_requires,
+setup(setup_requires=setup_requires,
       version=versioneer.get_version(),
       cmdclass=versioneer.get_cmdclass())
