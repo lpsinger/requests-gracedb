@@ -2,7 +2,7 @@ from requests.sessions import Session
 
 from .api import API
 from .auth import SessionAuthMixin
-from .error import SessionErrorMixin
+from .errors import SessionErrorMixin
 from .file import SessionFileMixin
 from .user_agent import SessionUserAgentMixin
 
