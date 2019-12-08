@@ -2,6 +2,28 @@ include:
   - project: emfollow/gitlab-ci-templates
     file: lint.yml
 
+# Build source distribution
+sdist:
+  image: python
+  stage: build
+  script:
+    - python setup.py sdist
+    - mv dist/* .
+  artifacts:
+    paths:
+      - '*.tar.gz'
+
+# Build binary distribution
+bdist:
+  image: python
+  stage: build
+  script:
+    - python setup.py bdist_wheel
+    - mv dist/* .
+  artifacts:
+    paths:
+      - '*.whl'
+
 test:
   image: python:slim
   stage: test
@@ -37,3 +59,16 @@ pages:
     - master
   dependencies:
     - test
+
+# Upload package to PyPI
+pypi:
+  stage: deploy
+  image: python:slim
+  script:
+    - pip install twine
+    - twine upload *.tar.* *.whl
+  dependencies:
+    - sdist
+    - bdist
+  only:
+    - tags@emfollow/gwcelery
