@@ -22,6 +22,7 @@ class Events(BaseEvents):
     child_class = Event
 
     def __getitem__(self, key):
+        """Make the API forgiving of mixing up events and superevents."""
         if 'S' in key:
             return self.parent.superevents[key]
         else:
@@ -44,6 +45,7 @@ class Superevents(BaseEvents):
     child_class = Superevent
 
     def __getitem__(self, key):
+        """Make the API forgiving of mixing up events and superevents."""
         if 'S' not in key:
             return self.parent.events[key]
         else:
