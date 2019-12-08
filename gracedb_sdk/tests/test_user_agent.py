@@ -13,6 +13,6 @@ def test_user_agent(socket_enabled, httpserver):
     )
 
     url = httpserver.url_for('/')
-    client = Session(url)
+    client = Client(url)
     with httpserver.wait():
         client.get(url)
