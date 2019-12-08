@@ -121,6 +121,12 @@ def test_events_files_get(client, events_create):
     assert 'coinc.xml' in result
 
 
+def test_events_files_get_alternate(client, events_create):
+    event_id = events_create['graceid']
+    result = client.events[event_id].files.get()
+    assert 'coinc.xml' in result
+
+
 def test_events_files_file_get(client, events_create):
     event_id = events_create['graceid']
     client.events[event_id].logs.create(
@@ -302,6 +308,13 @@ def test_superevents_files_get(client, superevents_create,
                                superevents_logs_create):
     superevent_id = superevents_create['superevent_id']
     result = client.superevents[superevent_id].files.get()
+    assert 'foo.txt' in result
+
+
+def test_superevents_files_get_alternate(client, superevents_create,
+                                         superevents_logs_create):
+    superevent_id = superevents_create['superevent_id']
+    result = client.events[superevent_id].files.get()
     assert 'foo.txt' in result
 
 
