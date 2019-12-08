@@ -16,7 +16,7 @@ test:
     - rm keytab
     - ./ligo-proxy-init -k
   script:
-    - pip install pytest-cov -r test-requirements.txt
+    - pip install pytest-cov
     - python setup.py test --addopts='--cov --cov-report=html --cov-report=term --junit-xml=junit.xml -vv'
   coverage: '/^TOTAL\s+.*\s+(\d+\.?\d*)%/'
   artifacts:

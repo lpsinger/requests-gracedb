@@ -1,4 +1,0 @@
-pytest-freezegun
-pytest-httpserver
-pytest-runner
-pytest-socket
