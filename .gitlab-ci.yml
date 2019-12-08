@@ -5,6 +5,16 @@ include:
 test:
   image: python:slim
   stage: test
+  before_script:  # Install robot keytab for integration tests
+    # Decode base64-encoded keytab
+    - echo "${ROBOT_KEYTAB}" | base64 -d | install -m 0600 /dev/stdin keytab
+    # Read principal from first entry in keytab
+    - PRINCIPAL=$(klist -k keytab | head -n 4 | tail -n 1 | sed -E 's/^.* +//')
+    # Create X.509 certificate
+    - kinit $PRINCIPAL -k -t keytab
+    - rm keytab
+    - ligo-proxy-init -k -p
+    - grid-proxy-info -identity
   script:
     - pip install pytest-cov -r test-requirements.txt
     - python setup.py test --addopts='--cov --cov-report=html --cov-report=term --junit-xml=junit.xml -vv'
