@@ -25,7 +25,7 @@ class Events(BaseEvents):
         if 'S' in key:
             return self.parent.superevents[key]
         else:
-            return super().__getitem__[key]
+            return super().__getitem__(key)
 
     def create_or_update(self, event_id, *,
                          filename='initial.data',
@@ -47,7 +47,7 @@ class Superevents(BaseEvents):
         if 'S' not in key:
             return self.parent.events[key]
         else:
-            return super().__getitem__[key]
+            return super().__getitem__(key)
 
     def create_or_update(self, superevent_id, *,
                          events=None, labels=None, **kwargs):
