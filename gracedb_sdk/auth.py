@@ -57,14 +57,6 @@ def find_username_password(url):
     return username, password
 
 
-def _hook_warn_basic_auth(response, *args, **kwargs):
-    """Response hook to print a warning for basic auth problems."""
-    if response.status_code == status_codes.unauthorized:
-        warn('Please check the username/password in your .netrc file. If your '
-             'password is more than a year old, you will need to use the web '
-             'interface to generate a new one.')
-
-
 class SessionAuthMixin:
     """A mixin for :class:`requests.Session` to add support for all GraceDB
     authentication mechanisms.
@@ -95,11 +87,9 @@ class SessionAuthMixin:
             self.cert = cert
         elif username is not None:
             self.auth = (username, password)
-            self.hooks['response'].append(_hook_warn_basic_auth)
         elif default_cert is not None:
             self.cert = default_cert
         elif default_username is not None:
             self.auth = (default_username, default_password)
-            self.hooks['response'].append(_hook_warn_basic_auth)
         elif fail_noauth:
             raise ValueError('No authentication credentials found.')
