@@ -3,7 +3,7 @@ include:
     file: lint.yml
 
 test:
-  image: python:slim
+  image: python
   stage: test
   before_script:  # Install robot keytab for integration tests
     - git clone --depth 1 https://git.ligo.org/Auth/Shibboleth-SP/ligo-proxy-utils
