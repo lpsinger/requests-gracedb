@@ -76,7 +76,7 @@ class Client(API, SessionAuthMixin, SessionErrorMixin, SessionFileMixin,
     * :samp:`client.events.get()`
     * :samp:`client.events.search(query={query}, sort={sort})`
     * :samp:`client.events.create(filename={filename}, filecontents={filecontents}, group={group}, pipeline={pipeline}, search={search}, labels={labels}, offline={offline})`
-    * :samp:`client.events[{event_id}].update(filename={filename}, filecontents={filecontents})`
+    * :samp:`client.events.update({event_id}, filename={filename}, filecontents={filecontents})`
     * :samp:`client.events[{event_id}].get()`
     * :samp:`client.events[{event_id}].files.get()`
     * :samp:`client.events[{event_id}].files[{filename}].get()`
@@ -95,7 +95,7 @@ class Client(API, SessionAuthMixin, SessionErrorMixin, SessionFileMixin,
     * :samp:`client.superevents.get()`
     * :samp:`client.superevents.search(query={query}, sort={sort})`
     * :samp:`client.superevents.create(t_start={t_start}, t_0={t_0}, t_end={t_end}, preferred_event={preferred_event}, events={events}, labels={labels})`
-    * :samp:`client.superevents[{superevent_id}].update(t_start={t_start}, t_0={t_0}, t_end={t_end}, preferred_event={preferred_event})`
+    * :samp:`client.superevents.update({superevent_id}, t_start={t_start}, t_0={t_0}, t_end={t_end}, preferred_event={preferred_event})`
     * :samp:`client.superevents[{superevent_id}].add({event_id})`
     * :samp:`client.superevents[{superevent_id}].remove({event_id})`
     * :samp:`client.superevents[{superevent_id}].is_exposed()`
