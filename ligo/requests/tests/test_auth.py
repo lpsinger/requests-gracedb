@@ -34,8 +34,7 @@ def x509_proxy(tmpdir):
 
 
 def test_noauth_invalid():
-    """Test setting both force_noauth=True and fail_if_noauth=True is an
-    error."""
+    """Test that setting force_noauth=fail_if_noauth=True is an error."""
     with pytest.raises(ValueError):
         Session('https://example.org/', force_noauth=True, fail_if_noauth=True)
 
