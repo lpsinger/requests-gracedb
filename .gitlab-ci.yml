@@ -63,7 +63,7 @@ pages:
   only:
     - master
   dependencies:
-    - test
+    - test/3.8
 
 # Upload package to PyPI
 pypi:
