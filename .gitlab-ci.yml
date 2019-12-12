@@ -1,6 +1,8 @@
 include:
   - project: emfollow/gitlab-ci-templates
     file: lint.yml
+  - project: emfollow/gitlab-ci-templates
+    file: sccb.yml
 
 # Build source distribution
 sdist:
@@ -64,6 +66,10 @@ pages:
     - master
   dependencies:
     - test/3.8
+
+# SCCB request
+sccb:
+  stage: deploy
 
 # Upload package to PyPI
 pypi:
