@@ -51,7 +51,7 @@ def _prepare_files(files):
 class SessionFileMixin(object):
     """A mixin for :class:`requests.Session` to add features for file uploads.
 
-    The :method:`requets.Session.request` method takes a `files` argument which
+    The :meth:`requests.Session.request` method takes a `files` argument which
     is a dictionary of `{fieldname: fileobject}`, where `fileobject` may be a
     file-like object or a tuple of 2-4 elements consisting of the filename,
     file content, MIME type, and any custom headers.

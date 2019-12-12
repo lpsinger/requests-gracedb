@@ -93,7 +93,7 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
 
-autodoc_mock_imports = ['cryptography', 'requests', 'safe_netrc']
+autodoc_mock_imports = ['cryptography', 'requests', 'safe_netrc', 'six']
 for mod in []:
     try:
         importlib.import_module(mod)

@@ -16,6 +16,11 @@ API
 ---
 
 .. automodule:: ligo.requests
+.. automodule:: ligo.requests.auth
+.. automodule:: ligo.requests.cert_reload
+.. automodule:: ligo.requests.errors
+.. automodule:: ligo.requests.file
+.. automodule:: ligo.requests.user_agent
 
 .. _Requests: http://requests.readthedocs.io/
 .. _pip: http://pip.pypa.io
