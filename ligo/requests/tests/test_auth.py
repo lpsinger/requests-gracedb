@@ -34,9 +34,10 @@ def x509_proxy(tmpdir):
 
 
 def test_noauth_invalid():
-    """Test setting both force_noauth=True and fail_noauth=True is an error."""
+    """Test setting both force_noauth=True and fail_if_noauth=True is an
+    error."""
     with pytest.raises(ValueError):
-        Session('https://example.org/', force_noauth=True, fail_noauth=True)
+        Session('https://example.org/', force_noauth=True, fail_if_noauth=True)
 
 
 def test_force_noauth():
@@ -170,7 +171,7 @@ def test_basic_default(monkeypatch, tmpdir, x509up_does_not_exist):
     assert client.cert is None
 
 
-def test_fail_noauth(monkeypatch, tmpdir, x509up_does_not_exist):
+def test_fail_if_noauth(monkeypatch, tmpdir, x509up_does_not_exist):
     monkeypatch.setenv('NETRC', str(tmpdir / 'netrc'))
     monkeypatch.delenv('X509_USER_CERT', raising=False)
     monkeypatch.delenv('X509_USER_KEY', raising=False)
@@ -180,4 +181,4 @@ def test_fail_noauth(monkeypatch, tmpdir, x509up_does_not_exist):
     assert client.auth is None
     assert client.cert is None
     with pytest.raises(ValueError):
-        Session('https://example.org/', fail_noauth=True)
+        Session('https://example.org/', fail_if_noauth=True)

@@ -73,7 +73,7 @@ class SessionAuthMixin(object):
         Password for basic auth.
     force_noauth : bool, default=False
         If true, then do not use any authentication at all.
-    fail_noauth : bool, default=False
+    fail_if_noauth : bool, default=False
         If true, then raise an exception if authentication credentials are
         not provided.
     cert_reload : bool, default=False
@@ -110,7 +110,7 @@ class SessionAuthMixin(object):
         in the environment variable :envvar:`NETRC`, and look for a username
         and password matching the hostname in the URL.
 
-    6.  If the :obj:`fail_noauth` keyword argument is true, and no
+    6.  If the :obj:`fail_if_noauth` keyword argument is true, and no
         authentication source was found, then raise a :class:`ValueError`.
 
     References
@@ -121,7 +121,7 @@ class SessionAuthMixin(object):
     """  # noqa: E501
 
     def __init__(self, url=None, cert=None, username=None, password=None,
-                 force_noauth=False, fail_noauth=False, cert_reload=False,
+                 force_noauth=False, fail_if_noauth=False, cert_reload=False,
                  cert_reload_timeout=300, **kwargs):
         super(SessionAuthMixin, self).__init__(**kwargs)
 
@@ -131,8 +131,9 @@ class SessionAuthMixin(object):
                 cert_reload_timeout=cert_reload_timeout))
 
         # Argument validation
-        if fail_noauth and force_noauth:
-            raise ValueError('Must not set both force_noauth and fail_noauth.')
+        if fail_if_noauth and force_noauth:
+            raise ValueError(
+                'Must not set both force_noauth and fail_if_noauth.')
         if (username is None) ^ (password is None):
             raise ValueError('Must provide username and password, or neither.')
 
@@ -149,5 +150,5 @@ class SessionAuthMixin(object):
             self.cert = default_cert
         elif default_username is not None:
             self.auth = (default_username, default_password)
-        elif fail_noauth:
+        elif fail_if_noauth:
             raise ValueError('No authentication credentials found.')
