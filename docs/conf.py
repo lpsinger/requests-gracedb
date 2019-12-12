@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# GWCelery documentation build configuration file, created by
-# sphinx-quickstart on Tue Dec  5 14:59:24 2017.
-#
 # This file is execfile()d with the current directory set to its
 # containing dir.
 #
@@ -65,7 +62,7 @@ description = setup_cfg['metadata']['description']
 # built documents.
 
 spec = importlib.util.spec_from_file_location(
-    '_version', '../gracedb_sdk/_version.py')
+    '_version', '../ligo/requests/_version.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 parsed_version = pkg_resources.parse_version(module.get_versions()['version'])

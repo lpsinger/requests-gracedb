@@ -24,19 +24,8 @@ bdist:
     paths:
       - '*.whl'
 
-test:
-  image: python:slim
+.test: &test
   stage: test
-  before_script:  # Install robot keytab for integration tests
-    - apt-get update && apt-get install -y curl krb5-user xsltproc
-    # Decode base64-encoded keytab
-    - echo "${ROBOT_KEYTAB}" | base64 -d | install -m 0600 /dev/stdin keytab
-    # Read principal from first entry in keytab
-    - PRINCIPAL=$(klist -k keytab | head -n 4 | tail -n 1 | sed -E 's/^.* +//')
-    # Create X.509 certificate
-    - kinit $PRINCIPAL -k -t keytab
-    - rm keytab
-    - ./ligo-proxy-init -k
   script:
     - pip install pytest-cov
     - python setup.py test --addopts='--cov --cov-report=html --cov-report=term --junit-xml=junit.xml -vv'
@@ -46,6 +35,22 @@ test:
       - htmlcov/
     reports:
       junit: junit.xml
+
+test/2.7:
+  image: python/2.7-slim
+  <<: *test
+
+test/3.6:
+  image: python/3.6-slim
+  <<: *test
+
+test/3.7:
+  image: python/3.7-slim
+  <<: *test
+
+test/3.8:
+  image: python/3.8-slim
+  <<: *test
 
 pages:
   stage: deploy

@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=gracedb-sdk
+set SPHINXPROJ=ligo-requests
 
 if "%1" == "" goto help
 

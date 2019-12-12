@@ -42,8 +42,8 @@ def get_config():
     cfg.VCS = "git"
     cfg.style = ""
     cfg.tag_prefix = "v"
-    cfg.parentdir_prefix = "gracedb-sdk-"
-    cfg.versionfile_source = "gracedb_sdk/_version.py"
+    cfg.parentdir_prefix = "ligo-requests-"
+    cfg.versionfile_source = "ligo/requests/_version.py"
     cfg.verbose = False
     return cfg
 

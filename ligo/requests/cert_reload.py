@@ -1,4 +1,5 @@
 """HTTPS adapter to close connections with expired client certificates."""
+from __future__ import absolute_import
 from datetime import datetime, timedelta
 from functools import partial
 
@@ -19,8 +20,8 @@ def load_certificate(filename):
 
 class CertReloadingHTTPSConnection(HTTPSConnection):
 
-    def __init__(self, *args, cert_reload_timeout=timedelta(0), **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, host, cert_reload_timeout=timedelta(0), **kwargs):
+        super(CertReloadingHTTPSConnection, self).__init__(host, **kwargs)
         self._not_valid_after = datetime.max
         self._reload_timeout = cert_reload_timeout
 
@@ -33,20 +34,23 @@ class CertReloadingHTTPSConnection(HTTPSConnection):
         if self.cert_file:
             cert = load_certificate(self.cert_file)
             self._not_valid_after = cert.not_valid_after
-        super().connect()
+        super(CertReloadingHTTPSConnection, self).connect()
 
 
 class CertReloadingHTTPSConnectionPool(HTTPSConnectionPool):
 
     ConnectionCls = CertReloadingHTTPSConnection
 
-    def __init__(self, *args, cert_reload_timeout=timedelta(0), **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, host, port=None, cert_reload_timeout=timedelta(0),
+                 **kwargs):
+        super(CertReloadingHTTPSConnectionPool, self).__init__(
+            host, port=port, **kwargs)
         self.conn_kw['cert_reload_timeout'] = cert_reload_timeout
 
     def _get_conn(self, timeout=None):
         while True:
-            conn = super()._get_conn(timeout)
+            conn = super(CertReloadingHTTPSConnectionPool, self)._get_conn(
+                timeout)
             # Note: this loop is guaranteed to terminate because, even if the
             # pool is completely drained, when we create a new connection, its
             # `_not_valid_after` property is set to `datetime.max`, and the
@@ -57,8 +61,8 @@ class CertReloadingHTTPSConnectionPool(HTTPSConnectionPool):
 
 class CertReloadingHTTPAdapter(HTTPAdapter):
 
-    def __init__(self, *args, cert_reload_timeout=0, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, cert_reload_timeout=0, **kwargs):
+        super(CertReloadingHTTPAdapter, self).__init__(**kwargs)
         https_pool_cls = partial(
             CertReloadingHTTPSConnectionPool,
             cert_reload_timeout=timedelta(seconds=cert_reload_timeout))

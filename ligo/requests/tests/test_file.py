@@ -1,12 +1,15 @@
-"""Tests for :mod:`gracedb_sdk.file`."""
+"""Tests for :mod:`ligo.requests.file`."""
+from __future__ import absolute_import
 from mimetypes import guess_type
-from unittest.mock import Mock
+try:
+    from unittest.mock import Mock
+except ImportError:  # FIXME: Python 2
+    from mock import Mock
 
-import pkg_resources
 import requests
 import pytest
 
-from .. import Client
+from .. import Session
 
 
 @pytest.fixture
@@ -16,14 +19,16 @@ def mock_request(monkeypatch):
     return mock
 
 
-def test_filename_and_contents(mock_request):
+def test_filename_and_contents(mock_request, tmpdir):
     # Different operating systems return different MIME types for *.xml files:
     # application/xml on macOS, text/xml on Linux.
     xml_mime_type, _ = guess_type('example.xml')
 
-    client = Client()
-    filename = pkg_resources.resource_filename(__name__, 'data/coinc.xml')
-    filecontent = pkg_resources.resource_string(__name__, 'data/coinc.xml')
+    client = Session('https://example.org/')
+    filename = str(tmpdir / 'coinc.xml')
+    filecontent = b'<!--example data-->'
+    with open(filename, 'wb') as f:
+        f.write(filecontent)
     file_expected = ('coinc.xml', filecontent, xml_mime_type)
 
     file_in = ('coinc.xml', filecontent)

@@ -1,10 +1,15 @@
-"""Tests for :mod:`gracedb_sdk.user_agent`."""
+"""Tests for :mod:`ligo.requests.user_agent`."""
+import pytest
+
 from .. import __version__
-from .. import Client
+from .. import Session
+
+# FIXME: Python 2
+pytest.importorskip('pytest_httpserver')
 
 
 def test_user_agent(socket_enabled, httpserver):
-    expected_user_agent = f'gracedb_sdk/{__version__}'
+    expected_user_agent = 'ligo.requests/{}'.format(__version__)
 
     httpserver.expect_oneshot_request(
         '/', headers={'User-Agent': expected_user_agent}
@@ -13,6 +18,6 @@ def test_user_agent(socket_enabled, httpserver):
     )
 
     url = httpserver.url_for('/')
-    client = Client(url)
+    client = Session(url)
     with httpserver.wait():
         client.get(url)

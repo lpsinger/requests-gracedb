@@ -1,6 +1,6 @@
 import os
 from os import getuid
-from urllib.parse import urlparse
+from six.moves.urllib.parse import urlparse
 
 from safe_netrc import netrc
 
@@ -55,15 +55,75 @@ def find_username_password(url):
     return username, password
 
 
-class SessionAuthMixin:
+class SessionAuthMixin(object):
     """A mixin for :class:`requests.Session` to add support for all GraceDB
     authentication mechanisms.
-    """
+
+    Parameters
+    ----------
+    url : str
+        GraceDB Client URL.
+    cert : str, tuple
+        Client-side X.509 certificate. May be either a single filename
+        if the certificate and private key are concatenated together, or
+        a tuple of the filenames for the certificate and private key.
+    username : str
+        Username for basic auth.
+    password : str
+        Password for basic auth.
+    force_noauth : bool, default=False
+        If true, then do not use any authentication at all.
+    fail_noauth : bool, default=False
+        If true, then raise an exception if authentication credentials are
+        not provided.
+    cert_reload : bool, default=False
+        If true, then automatically reload the client certificate before it
+        expires.
+    cert_cert_reload_timeout : int, default=300
+        Reload the certificate this many seconds before it expires.
+
+    Notes
+    -----
+    When a new Session instance is created, the following sources of
+    authentication are tried, in order:
+
+    1.  If the :obj:`force_noauth` keyword argument is true, then perform no
+        authentication at all.
+
+    2.  If the :obj:`cert` keyword argument is provided, then use X.509 client
+        certificate authentication.
+
+    3.  If the :obj:`username` and :obj:`password` keyword arguments are
+        provided, then use basic auth.
+
+    4.  Look for a default X.509 client certificate in:
+
+        a.  the environment variables :envvar:`X509_USER_CERT` and
+            :envvar:`X509_USER_KEY`
+        b.  the environment variable :envvar:`X509_USER_PROXY`
+        c.  the file :file:`/tmp/x509up_u{UID}`, where :samp:`{UID}` is your
+            numeric user ID
+        d.  the files :file:`~/.globus/usercert.pem` and
+            :file:`~/.globus/userkey.pem`
+
+    5.  Read the netrc file [1]_ located at :file:`~/.netrc`, or at the path stored
+        in the environment variable :envvar:`NETRC`, and look for a username
+        and password matching the hostname in the URL.
+
+    6.  If the :obj:`fail_noauth` keyword argument is true, and no
+        authentication source was found, then raise a :class:`ValueError`.
+
+    References
+    ----------
+    .. [1] The .netrc file.
+           https://www.gnu.org/software/inetutils/manual/html_node/The-_002enetrc-file.html
+
+    """  # noqa: E501
 
     def __init__(self, url=None, cert=None, username=None, password=None,
                  force_noauth=False, fail_noauth=False, cert_reload=False,
-                 cert_reload_timeout=300):
-        super().__init__()
+                 cert_reload_timeout=300, **kwargs):
+        super(SessionAuthMixin, self).__init__(**kwargs)
 
         # Support for reloading client certificates
         if cert_reload:

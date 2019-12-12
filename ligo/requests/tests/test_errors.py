@@ -1,8 +1,12 @@
-"""Tests for :mod:`gracedb_sdk.errors`."""
+"""Tests for :mod:`ligo.requests.errors`."""
+from __future__ import absolute_import
 from requests.exceptions import HTTPError
 import pytest
 
-from .. import Client
+from .. import Session
+
+# FIXME: Python 2
+pytest.importorskip('pytest_httpserver')
 
 
 def test_errors(socket_enabled, httpserver):
@@ -11,7 +15,7 @@ def test_errors(socket_enabled, httpserver):
     httpserver.expect_request('/').respond_with_data(message, status)
 
     url = httpserver.url_for('/')
-    client = Client(url)
+    client = Session(url)
     with pytest.raises(HTTPError) as excinfo:
         client.get(url)
     exception = excinfo.value

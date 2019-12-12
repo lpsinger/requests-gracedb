@@ -1,2 +1,2 @@
 include versioneer.py
-include gracedb_sdk/_version.py
+include ligo/requests/_version.py

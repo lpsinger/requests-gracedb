@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from os.path import basename
 from mimetypes import guess_type
 from sys import stdin
@@ -17,7 +18,9 @@ def _guess_mime_type(key, val):
     elif len(val) < 3 or val[2] is None:
         filename = val[0]
         filetype = _guess_content_type(filename)
-        val = (*val[:2], filetype, *val[3:])
+        # val = (*val[:2], filetype, *val[3:])
+        # FIXME: Python 2
+        val = tuple(val[:2]) + (filetype,) + tuple(val[3:])
     return key, val
 
 
@@ -27,7 +30,9 @@ def _read_files(key, val):
         with (stdin.buffer if filename == '-' else open(filename, 'rb')) as f:
             data = f.read()
         filename = basename(filename)
-        val = (filename, data, *val[2:])
+        # val = (filename, data, *val[2:])
+        # FIXME: Python 2
+        val = (filename, data) + tuple(val[2:])
     return key, val
 
 
@@ -43,7 +48,7 @@ def _prepare_files(files):
     return files
 
 
-class SessionFileMixin:
+class SessionFileMixin(object):
     """A mixin for :class:`requests.Session` to add features for file uploads.
 
     The :method:`requets.Session.request` method takes a `files` argument which
@@ -64,7 +69,7 @@ class SessionFileMixin:
             cookies=None, files=None, auth=None, timeout=None,
             allow_redirects=True, proxies=None, hooks=None, stream=None,
             verify=None, cert=None, json=None):
-        return super().request(
+        return super(SessionFileMixin, self).request(
             method, url, params=params, data=data, headers=headers,
             cookies=cookies, files=_prepare_files(files), auth=auth,
             timeout=timeout, allow_redirects=True, proxies=proxies,

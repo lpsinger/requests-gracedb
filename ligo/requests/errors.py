@@ -3,11 +3,11 @@ def _hook_raise_errors(response, *args, **kwargs):
     response.raise_for_status()
 
 
-class SessionErrorMixin:
+class SessionErrorMixin(object):
     """A mixin for :class:`requests.Session` to raise exceptions for HTTP
     errors.
     """
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(SessionErrorMixin, self).__init__(*args, **kwargs)
         self.hooks['response'].append(_hook_raise_errors)

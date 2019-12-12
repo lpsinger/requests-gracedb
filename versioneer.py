@@ -235,7 +235,7 @@ Python 3, it is not entirely consistent with bytes-vs-unicode distinctions.
 Newer releases probably generate unicode version strings on py2. It's not
 clear that this is wrong, but it may be surprising for applications when then
 write these strings to a network connection or include them in bytes-oriented
-Clients like cryptographic checksums.
+APIs like cryptographic checksums.
 
 [Bug #71](https://github.com/warner/python-versioneer/issues/71) investigates
 this question.
