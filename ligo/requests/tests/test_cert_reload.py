@@ -1,7 +1,7 @@
 """Tests for :mod:`ligo.requests.cert_reload`."""
 from __future__ import absolute_import
 from datetime import datetime
-from ssl import SSLContext, CERT_NONE
+from ssl import SSLContext
 
 from cryptography.x509 import (
     CertificateBuilder, DNSName, Name, NameAttribute, random_serial_number,
@@ -54,9 +54,9 @@ def client_cert(client_key, backend):
     ).public_key(
         client_key.public_key()
     ).not_valid_before(
-        datetime(2019, 1, 1)
+        datetime(3019, 1, 1)
     ).not_valid_after(
-        datetime(2019, 1, 10)
+        datetime(3019, 1, 10)
     ).add_extension(
         SubjectAlternativeName([DNSName(six.u('localhost'))]),
         critical=False
@@ -81,9 +81,9 @@ def server_cert(server_key, backend):
     ).public_key(
         server_key.public_key()
     ).not_valid_before(
-        datetime(2018, 1, 1)
+        datetime(2008, 1, 1)
     ).not_valid_after(
-        datetime(2020, 1, 1)
+        datetime(3020, 1, 1)
     ).add_extension(
         SubjectAlternativeName([DNSName(six.u('localhost'))]),
         critical=False
@@ -135,7 +135,6 @@ def server(socket_enabled, server_cert_file, server_key_file):
     """Run test https server."""
     context = SSLContext()
     context.load_cert_chain(server_cert_file, server_key_file)
-    context.verify_mode = CERT_NONE
     with pytest_httpserver.HTTPServer(ssl_context=context) as server:
         server.expect_request('/').respond_with_json({'foo': 'bar'})
         yield server
@@ -155,13 +154,13 @@ def test_cert_reload(client, server, freezer):
     url = server.url_for('/')
 
     # Test 1: significantly before expiration time, still valid
-    freezer.move_to('2019-01-02')
+    freezer.move_to('3019-01-02')
     assert client.get(url).json() == {'foo': 'bar'}
     pool1 = client.get_adapter(url=url).poolmanager.connection_from_url(url)
     conn1 = pool1.pool.queue[-1]
 
     # Test 2: > cert_reload_timeout seconds before expiration time, still valid
-    freezer.move_to('2019-01-09T23:54:59')
+    freezer.move_to('3019-01-09T23:54:59')
     assert client.get(url).json() == {'foo': 'bar'}
     pool2 = client.get_adapter(url=url).poolmanager.connection_from_url(url)
     conn2 = pool2.pool.queue[-1]
@@ -169,7 +168,7 @@ def test_cert_reload(client, server, freezer):
     assert conn1 is conn2
 
     # Test 3: < cert_reload_timeout seconds before expiration time, invalid
-    freezer.move_to('2019-01-10')
+    freezer.move_to('3019-01-10')
     assert client.get(url).json() == {'foo': 'bar'}
     pool3 = client.get_adapter(url=url).poolmanager.connection_from_url(url)
     conn3 = pool3.pool.queue[-1]
