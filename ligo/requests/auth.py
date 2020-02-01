@@ -138,6 +138,10 @@ class SessionAuthMixin(object):
         if (username is None) ^ (password is None):
             raise ValueError('Must provide username and password, or neither.')
 
+        # FIXME: these should go into elif clauses below
+        # (as in `elif default_cert := _find_x509_credentials():`)
+        # in order to defer unnecessary I/O,  but this requires
+        # the := operator, which requires Python 3.8.
         default_cert = _find_x509_credentials()
         default_basic_auth = _find_username_password(url)
 
