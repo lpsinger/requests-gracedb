@@ -7,7 +7,7 @@ from safe_netrc import netrc
 from .cert_reload import CertReloadingHTTPAdapter
 
 
-def find_x509_credentials():
+def _find_x509_credentials():
     """Try to find a user's X509 certificate and key.
 
     Checks environment variables first, then expected location for default
@@ -138,7 +138,7 @@ class SessionAuthMixin(object):
         if (username is None) ^ (password is None):
             raise ValueError('Must provide username and password, or neither.')
 
-        default_cert = find_x509_credentials()
+        default_cert = _find_x509_credentials()
         default_basic_auth = _find_username_password(url)
 
         if force_noauth:
