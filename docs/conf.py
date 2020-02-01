@@ -56,6 +56,7 @@ setup_cfg.read('../setup.cfg')
 project = setup_cfg['metadata']['name']
 author = setup_cfg['metadata']['author']
 description = setup_cfg['metadata']['description']
+copyright = '2020, Leo P. Singer'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
