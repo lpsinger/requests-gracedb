@@ -36,7 +36,7 @@ class _CertReloadingHTTPSConnection(HTTPSConnection):
     def __init__(self, host, cert_reload_timeout=0, **kwargs):
         super(_CertReloadingHTTPSConnection, self).__init__(host, **kwargs)
         self._not_valid_after = datetime.max
-        self._reload_timeout = timedelta(cert_reload_timeout)
+        self._reload_timeout = timedelta(seconds=cert_reload_timeout)
 
     @property
     def cert_has_expired(self):
