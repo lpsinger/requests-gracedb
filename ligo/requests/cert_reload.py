@@ -12,7 +12,7 @@ from requests.adapters import HTTPAdapter
 _backend = default_backend()
 
 
-def load_certificate(filename):
+def load_x509_certificate(filename):
     with open(filename, 'rb') as f:
         data = f.read()
     return load_pem_x509_certificate(data, _backend)
@@ -32,7 +32,7 @@ class CertReloadingHTTPSConnection(HTTPSConnection):
 
     def connect(self):
         if self.cert_file:
-            cert = load_certificate(self.cert_file)
+            cert = load_x509_certificate(self.cert_file)
             self._not_valid_after = cert.not_valid_after
         super(CertReloadingHTTPSConnection, self).connect()
 
