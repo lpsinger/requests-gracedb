@@ -79,7 +79,7 @@ class SessionAuthMixin(object):
     cert_reload : bool, default=False
         If true, then automatically reload the client certificate before it
         expires.
-    cert_cert_reload_timeout : int, default=300
+    cert_reload_timeout : int, default=300
         Reload the certificate this many seconds before it expires.
 
     Notes
