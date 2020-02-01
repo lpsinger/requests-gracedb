@@ -20,10 +20,10 @@ def load_x509_certificate(filename):
 
 class CertReloadingHTTPSConnection(HTTPSConnection):
 
-    def __init__(self, host, cert_reload_timeout=timedelta(0), **kwargs):
+    def __init__(self, host, cert_reload_timeout=0, **kwargs):
         super(CertReloadingHTTPSConnection, self).__init__(host, **kwargs)
         self._not_valid_after = datetime.max
-        self._reload_timeout = cert_reload_timeout
+        self._reload_timeout = timedelta(cert_reload_timeout)
 
     @property
     def cert_has_expired(self):
@@ -41,8 +41,7 @@ class CertReloadingHTTPSConnectionPool(HTTPSConnectionPool):
 
     ConnectionCls = CertReloadingHTTPSConnection
 
-    def __init__(self, host, port=None, cert_reload_timeout=timedelta(0),
-                 **kwargs):
+    def __init__(self, host, port=None, cert_reload_timeout=0, **kwargs):
         super(CertReloadingHTTPSConnectionPool, self).__init__(
             host, port=port, **kwargs)
         self.conn_kw['cert_reload_timeout'] = cert_reload_timeout
@@ -65,7 +64,7 @@ class CertReloadingHTTPAdapter(HTTPAdapter):
         super(CertReloadingHTTPAdapter, self).__init__(**kwargs)
         https_pool_cls = partial(
             CertReloadingHTTPSConnectionPool,
-            cert_reload_timeout=timedelta(seconds=cert_reload_timeout))
+            cert_reload_timeout=cert_reload_timeout)
         self.poolmanager.pool_classes_by_scheme = {
             'http': HTTPConnectionPool,
             'https': https_pool_cls}
