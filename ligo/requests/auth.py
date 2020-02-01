@@ -42,15 +42,16 @@ def find_x509_credentials():
 
 def _find_username_password(url):
     host = urlparse(url).hostname
-    username = password = None
 
     try:
         result = netrc().authenticators(host)
     except IOError:
-        result = None
+        return None
 
-    if result:
-        username, _, password = result
+    if result is None:
+        return None
+
+    username, _, password = result
 
     return username, password
 
@@ -138,7 +139,7 @@ class SessionAuthMixin(object):
             raise ValueError('Must provide username and password, or neither.')
 
         default_cert = find_x509_credentials()
-        default_username, default_password = _find_username_password(url)
+        default_basic_auth = _find_username_password(url)
 
         if force_noauth:
             pass
@@ -148,7 +149,7 @@ class SessionAuthMixin(object):
             self.auth = (username, password)
         elif default_cert is not None:
             self.cert = default_cert
-        elif default_username is not None:
-            self.auth = (default_username, default_password)
+        elif default_basic_auth is not None:
+            self.auth = default_basic_auth
         elif fail_if_noauth:
             raise ValueError('No authentication credentials found.')
