@@ -40,7 +40,7 @@ def find_x509_credentials():
     return None
 
 
-def find_username_password(url):
+def _find_username_password(url):
     host = urlparse(url).hostname
     username = password = None
 
@@ -138,7 +138,7 @@ class SessionAuthMixin(object):
             raise ValueError('Must provide username and password, or neither.')
 
         default_cert = find_x509_credentials()
-        default_username, default_password = find_username_password(url)
+        default_username, default_password = _find_username_password(url)
 
         if force_noauth:
             pass
