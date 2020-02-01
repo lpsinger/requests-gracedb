@@ -8,6 +8,6 @@ class SessionErrorMixin(object):
     errors.
     """
 
-    def __init__(self, *args, **kwargs):
-        super(SessionErrorMixin, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
+        super(SessionErrorMixin, self).__init__(**kwargs)
         self.hooks['response'].append(_hook_raise_errors)
