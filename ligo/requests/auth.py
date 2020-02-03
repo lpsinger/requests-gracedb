@@ -46,14 +46,13 @@ def _find_username_password(url):
     try:
         result = netrc().authenticators(host)
     except IOError:
-        return None
+        result = None
 
-    if result is None:
-        return None
+    if result is not None:
+        username, _, password = result
+        result = (username, password)
 
-    username, _, password = result
-
-    return username, password
+    return result
 
 
 class SessionAuthMixin(object):
