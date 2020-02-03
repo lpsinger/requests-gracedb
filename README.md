@@ -1,5 +1,8 @@
-# ligo-requests
+# requests-gracedb
 
-ligo-requests provides a generic REST API client for LIGO/Virgo services. It
-uses the powerful [Requests](http://requests.readthedocs.io/) package for
-reliable and high-throughput HTTP connection pooling.
+requests-gracedb provides a generic REST API client for [GraceDB] and similar
+LIGO/Virgo API services. It uses the powerful [Requests] package for reliable
+and high-throughput HTTP connection pooling.
+
+[GraceDB]: https://gracedb.ligo.org/
+[Requests]: http://requests.readthedocs.io/

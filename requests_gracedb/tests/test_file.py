@@ -1,4 +1,4 @@
-"""Tests for :mod:`ligo.requests.file`."""
+"""Tests for :mod:`requests_gracedb.file`."""
 from __future__ import absolute_import
 from mimetypes import guess_type
 try:

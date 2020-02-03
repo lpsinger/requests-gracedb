@@ -1,4 +1,4 @@
-"""Tests for :mod:`ligo.requests.cert_reload`."""
+"""Tests for :mod:`requests_gracedb.cert_reload`."""
 from __future__ import absolute_import
 from datetime import datetime
 from ssl import SSLContext

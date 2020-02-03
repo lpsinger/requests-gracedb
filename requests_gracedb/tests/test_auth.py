@@ -1,4 +1,4 @@
-"""Tests for :mod:`ligo.requests.auth`."""
+"""Tests for :mod:`requests_gracedb.auth`."""
 from __future__ import print_function
 import os
 import random
@@ -117,7 +117,7 @@ def x509up_exists(monkeypatch):
         with open(filename, 'wb') as f:
             set_rwx_user(f)
             break
-    monkeypatch.setattr('ligo.requests.auth.getuid', lambda: uid)
+    monkeypatch.setattr('requests_gracedb.auth.getuid', lambda: uid)
     yield filename
     os.remove(filename)
 
@@ -135,7 +135,7 @@ def x509up_does_not_exist(monkeypatch):
         filename = '/tmp/x509up_u{}'.format(uid)
         if not os.path.exists(filename):
             break
-    monkeypatch.setattr('ligo.requests.auth.getuid', lambda: uid)
+    monkeypatch.setattr('requests_gracedb.auth.getuid', lambda: uid)
     return filename
 
 

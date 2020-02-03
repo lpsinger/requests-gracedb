@@ -1,4 +1,4 @@
-"""Tests for :mod:`ligo.requests.errors`."""
+"""Tests for :mod:`requests_gracedb.errors`."""
 from __future__ import absolute_import
 from requests.exceptions import HTTPError
 import pytest

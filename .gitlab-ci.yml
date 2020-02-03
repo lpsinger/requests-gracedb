@@ -82,4 +82,4 @@ pypi:
     - sdist
     - bdist
   only:
-    - tags@emfollow/ligo-requests
+    - tags@emfollow/requests-gracedb

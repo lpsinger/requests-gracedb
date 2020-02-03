@@ -10,6 +10,9 @@ Changelog
     and its "not valid after" date to the distant future (3020-01-01). Maybe
     our great-great-grandchildren will be wiser.
 
+-   Rename package from ligo-requests to requests-gracedb to remove
+    institution-specific branding.
+
 0.0.1 (2019-12-12)
 ------------------
 

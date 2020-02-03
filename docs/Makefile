@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = ligo-requests
+SPHINXPROJ    = requests-gracedb
 SOURCEDIR     = .
 BUILDDIR      = _build
 

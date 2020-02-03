@@ -63,7 +63,7 @@ copyright = '2020, Leo P. Singer'
 # built documents.
 
 spec = importlib.util.spec_from_file_location(
-    '_version', '../ligo/requests/_version.py')
+    '_version', '../requests_gracedb/_version.py')
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 parsed_version = pkg_resources.parse_version(module.get_versions()['version'])

@@ -26,14 +26,14 @@ class Session(SessionAuthMixin,
     It adds the following behaviors to the session:
 
     * GraceDB-style authentication
-      (see :class:`~ligo.requests.auth.SessionAuthMixin`)
+      (see :class:`~requests_gracedb.auth.SessionAuthMixin`)
 
     * Raise exceptions based on HTTP status codes
-      (see :class:`~ligo.requests.error.SessionErrorMixin`)
+      (see :class:`~requests_gracedb.error.SessionErrorMixin`)
 
     * Automatically load POSTed files from disk, automatically guess MIME types
-      (see :class:`~ligo.requests.file.SessionFileMixin`)
+      (see :class:`~requests_gracedb.file.SessionFileMixin`)
 
     * Add User-Agent string based on Python package name and version
-      (see :class:`~ligo.requests.user_agent.SessionUserAgentMixin`)
+      (see :class:`~requests_gracedb.user_agent.SessionUserAgentMixin`)
     """
