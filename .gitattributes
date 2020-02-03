@@ -1,1 +1,1 @@
-ligo/requests/_version.py export-subst
+requests_gracedb/_version.py export-subst
