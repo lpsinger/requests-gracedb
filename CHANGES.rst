@@ -10,6 +10,9 @@ Changelog
     and its "not valid after" date to the distant future (3020-01-01). Maybe
     our great-great-grandchildren will be wiser.
 
+-   Address all feedback from Pierre Chanial's code review:
+    https://git.ligo.org/emfollow/requests-gracedb/issues/3
+
 -   Rename package from ligo-requests to requests-gracedb to remove
     institution-specific branding.
 
