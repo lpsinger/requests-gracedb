@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.0.2 (unreleased)
+0.1.0 (2020-02-03)
 ------------------
 
 -   Fix a unit test failure in test_cert_reload due to a test X.509 certificate
