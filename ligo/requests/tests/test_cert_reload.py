@@ -23,6 +23,7 @@ pytest_httpserver = pytest.importorskip('pytest_httpserver')
 
 @pytest.fixture
 def backend():
+    """Return an instance of the default cryptography backend."""
     return default_backend()
 
 
@@ -151,6 +152,7 @@ def client(server, client_cert_file, client_key_file, server_cert_file):
 
 
 def test_cert_reload(client, server, freezer):
+    """Test reloading client X.509 certificates."""
     url = server.url_for('/')
 
     # Test 1: significantly before expiration time, still valid

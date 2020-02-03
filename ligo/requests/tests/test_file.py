@@ -14,12 +14,14 @@ from .. import Session
 
 @pytest.fixture
 def mock_request(monkeypatch):
+    """Mock up requests.Session base class methods."""
     mock = Mock()
     monkeypatch.setattr(requests.Session, 'request', mock)
     return mock
 
 
 def test_filename_and_contents(mock_request, tmpdir):
+    """Test handling of various styles of POSTed files."""
     # Different operating systems return different MIME types for *.xml files:
     # application/xml on macOS, text/xml on Linux.
     xml_mime_type, _ = guess_type('example.xml')

@@ -10,6 +10,7 @@ pytest.importorskip('pytest_httpserver')
 
 
 def test_errors(socket_enabled, httpserver):
+    """Test that HTTP 400 responses result in exceptions."""
     message = 'Tea time!'
     status = 418
     httpserver.expect_request('/').respond_with_data(message, status)

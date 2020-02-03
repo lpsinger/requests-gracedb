@@ -9,6 +9,7 @@ pytest.importorskip('pytest_httpserver')
 
 
 def test_user_agent(socket_enabled, httpserver):
+    """Test that the User-Agent HTTP header is populated."""
     expected_user_agent = 'ligo.requests/{}'.format(__version__)
 
     httpserver.expect_oneshot_request(

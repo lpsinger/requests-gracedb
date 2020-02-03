@@ -16,6 +16,7 @@ def set_rwx_user(fileobj):
 
 @pytest.fixture
 def x509_cert_and_key(tmpdir):
+    """Generate (empty, dummy) X.509 public and private key files."""
     filenames = ('cert.pem', 'key.pem')
     filepaths = [str(tmpdir / filename) for filename in filenames]
     for filepath in filepaths:
@@ -26,6 +27,7 @@ def x509_cert_and_key(tmpdir):
 
 @pytest.fixture
 def x509_proxy(tmpdir):
+    """Generate a (empty, dummy) X.509 proxy file."""
     filename = 'proxy.pem'
     filepath = str(tmpdir / filename)
     with open(filepath, 'wb') as f:
@@ -93,6 +95,12 @@ def test_x509_default_proxy(monkeypatch, x509_proxy):
 
 @pytest.fixture
 def x509up_exists(monkeypatch):
+    """Make sure that the current UID has an X.509 proxy file.
+
+    The default X.509 proxy file is at `/tmp/x509up_u{uid}`. Make sure
+    that one exists. Create a temporary file with a name of that form
+    and then monkeypatch the current uid.
+    """
     while True:
         uid = random.randint(1000, 10000000)
         filename = '/tmp/x509up_u{}'.format(uid)
@@ -116,6 +124,12 @@ def x509up_exists(monkeypatch):
 
 @pytest.fixture
 def x509up_does_not_exist(monkeypatch):
+    """Make sure that the current UID does not have an X.509 proxy file.
+
+    The default X.509 proxy file is at `/tmp/x509up_u{uid}`. Make sure
+    that one does not exist. Find a random uid for which that file does
+    not exist and then monkeypatch the current uid.
+    """
     while True:
         uid = random.randint(1000, 10000000)
         filename = '/tmp/x509up_u{}'.format(uid)
@@ -171,6 +185,9 @@ def test_basic_default(monkeypatch, tmpdir, x509up_does_not_exist):
 
 
 def test_fail_if_noauth(monkeypatch, tmpdir, x509up_does_not_exist):
+    """Test that an exception is raised if fail_if_noauth=True and no
+    authentication source is available.
+    """
     monkeypatch.setenv('NETRC', str(tmpdir / 'netrc'))
     monkeypatch.delenv('X509_USER_CERT', raising=False)
     monkeypatch.delenv('X509_USER_KEY', raising=False)
