@@ -4,7 +4,7 @@ Changelog
 0.1.1 (unreleased)
 ------------------
 
--   No changes yet.
+-   Remove unused ``ligo`` namespace package.
 
 0.1.0 (2020-02-03)
 ------------------
