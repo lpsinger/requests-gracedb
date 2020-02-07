@@ -13,27 +13,27 @@ def _find_x509_credentials():
     Checks environment variables first, then expected location for default
     proxy.
     """
-    cert_file = os.environ.get('X509_USER_CERT')
-    key_file = os.environ.get('X509_USER_KEY')
-    if cert_file and key_file:
-        return cert_file, key_file
+    cert = os.environ.get('X509_USER_CERT')
+    key = os.environ.get('X509_USER_KEY')
+    if cert and key:
+        return cert, key
 
-    proxy_file = os.environ.get('X509_USER_PROXY')
-    if proxy_file:
-        return proxy_file
+    proxy = os.environ.get('X509_USER_PROXY')
+    if proxy:
+        return proxy
 
     # Try default proxy
-    proxy_file = os.path.join('/tmp', 'x509up_u{}'.format(getuid()))
-    if os.path.exists(proxy_file):
-        return proxy_file
+    proxy = os.path.join('/tmp', 'x509up_u{}'.format(getuid()))
+    if os.path.exists(proxy):
+        return proxy
 
     # Try default cert/key
     home_dir = os.environ.get('HOME')
     if home_dir:
-        cert_file = os.path.join(home_dir, '.globus', 'usercert.pem')
-        key_file = os.path.join(home_dir, '.globus', 'userkey.pem')
-        if os.path.exists(cert_file) and os.path.exists(key_file):
-            return cert_file, key_file
+        cert = os.path.join(home_dir, '.globus', 'usercert.pem')
+        key = os.path.join(home_dir, '.globus', 'userkey.pem')
+        if os.path.exists(cert) and os.path.exists(key):
+            return cert, key
 
     return None
 
