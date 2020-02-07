@@ -13,13 +13,12 @@ def _find_x509_credentials():
     Checks environment variables first, then expected location for default
     proxy.
     """
-    proxy_file = os.environ.get('X509_USER_PROXY')
     cert_file = os.environ.get('X509_USER_CERT')
     key_file = os.environ.get('X509_USER_KEY')
-
     if cert_file and key_file:
         return cert_file, key_file
 
+    proxy_file = os.environ.get('X509_USER_PROXY')
     if proxy_file:
         return proxy_file
 
