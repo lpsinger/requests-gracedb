@@ -28,12 +28,10 @@ def _find_x509_credentials():
         return proxy
 
     # Try default cert/key
-    home_dir = os.environ.get('HOME')
-    if home_dir:
-        cert = os.path.join(home_dir, '.globus', 'usercert.pem')
-        key = os.path.join(home_dir, '.globus', 'userkey.pem')
-        if os.path.exists(cert) and os.path.exists(key):
-            return cert, key
+    cert = os.path.expanduser(os.path.join('~', '.globus', 'usercert.pem'))
+    key = os.path.expanduser(os.path.join('~', '.globus', 'userkey.pem'))
+    if os.path.exists(cert) and os.path.exists(key):
+        return cert, key
 
     return None
 
