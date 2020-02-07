@@ -12,7 +12,14 @@ def _find_x509_credentials():
 
     Checks environment variables first, then expected location for default
     proxy.
-    """
+
+    Notes
+    -----
+    This function is adapted from the original _find_x509_credentials() method
+    in https://git.ligo.org/lscsoft/gracedb-client/blob/gracedb-2.5.0/ligo/gracedb/rest.py,
+    which is copyright (C) Brian Moe, Branson Stephens (2015).
+
+    """  # noqa: E501
     cert = os.environ.get('X509_USER_CERT')
     key = os.environ.get('X509_USER_KEY')
     if cert and key:
