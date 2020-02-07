@@ -32,7 +32,6 @@ def _find_x509_credentials():
     if home_dir:
         cert_file = os.path.join(home_dir, '.globus', 'usercert.pem')
         key_file = os.path.join(home_dir, '.globus', 'userkey.pem')
-
         if os.path.exists(cert_file) and os.path.exists(key_file):
             return cert_file, key_file
 
