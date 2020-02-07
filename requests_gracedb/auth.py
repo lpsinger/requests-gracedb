@@ -102,9 +102,9 @@ class SessionAuthMixin(object):
         d.  the files :file:`~/.globus/usercert.pem` and
             :file:`~/.globus/userkey.pem`
 
-    5.  Read the netrc file [1]_ located at :file:`~/.netrc`, or at the path stored
-        in the environment variable :envvar:`NETRC`, and look for a username
-        and password matching the hostname in the URL.
+    5.  Read the netrc file [1]_ located at :file:`~/.netrc`, or at the path
+        stored in the environment variable :envvar:`NETRC`, and look for a
+        username and password matching the hostname in the URL.
 
     6.  If the :obj:`fail_if_noauth` keyword argument is true, and no
         authentication source was found, then raise a :class:`ValueError`.
