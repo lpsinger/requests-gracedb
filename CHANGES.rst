@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1.2 (unreleased)
+0.1.2 (2020-02-10)
 ------------------
 
 -   Fix a urllib3 ValueError that occurs with older versions of urllib3.
