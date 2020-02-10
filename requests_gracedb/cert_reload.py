@@ -5,8 +5,9 @@ from functools import partial
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.x509 import load_pem_x509_certificate
-from urllib3.connection import HTTPSConnection
-from urllib3.connectionpool import HTTPConnectionPool, HTTPSConnectionPool
+from requests.packages.urllib3.connection import HTTPSConnection
+from requests.packages.urllib3.connectionpool import (HTTPConnectionPool,
+                                                      HTTPSConnectionPool)
 from requests.adapters import HTTPAdapter
 
 _backend = default_backend()

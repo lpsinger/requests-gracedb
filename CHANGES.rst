@@ -4,7 +4,8 @@ Changelog
 0.1.2 (unreleased)
 ------------------
 
--   No changes yet.
+-   Fix a urllib3 ValueError that occurs with older versions of urllib3.
+    See, for example, https://bugzilla.redhat.com/show_bug.cgi?id=1785696.
 
 0.1.1 (2020-02-04)
 ------------------
