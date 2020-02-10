@@ -1,5 +1,5 @@
-import os
-from os import getuid
+from os import access, environ, getuid, R_OK
+from os.path import expanduser, join
 from six.moves.urllib.parse import urlparse
 
 from safe_netrc import netrc
@@ -7,7 +7,7 @@ from safe_netrc import netrc
 from .cert_reload import CertReloadingHTTPAdapter
 
 
-def _find_x509_credentials():
+def _find_cert():
     """Try to find a user's X509 certificate and key.
 
     Checks environment variables first, then expected location for default
@@ -20,27 +20,23 @@ def _find_x509_credentials():
     which is copyright (C) Brian Moe, Branson Stephens (2015).
 
     """  # noqa: E501
-    cert = os.environ.get('X509_USER_CERT')
-    key = os.environ.get('X509_USER_KEY')
-    if cert and key:
-        return cert, key
+    result = tuple(environ.get(key)
+                   for key in ('X509_USER_CERT', 'X509_USER_KEY'))
+    if all(result):
+        return result
 
-    proxy = os.environ.get('X509_USER_PROXY')
-    if proxy:
-        return proxy
+    result = environ.get('X509_USER_PROXY')
+    if result:
+        return result
 
-    # Try default proxy
-    proxy = os.path.join('/tmp', 'x509up_u{}'.format(getuid()))
-    if os.path.exists(proxy):
-        return proxy
+    result = join('/tmp', 'x509up_u{}'.format(getuid()))
+    if access(result, R_OK):
+        return result
 
-    # Try default cert/key
-    cert = os.path.expanduser(os.path.join('~', '.globus', 'usercert.pem'))
-    key = os.path.expanduser(os.path.join('~', '.globus', 'userkey.pem'))
-    if os.path.exists(cert) and os.path.exists(key):
-        return cert, key
-
-    return None
+    result = tuple(expanduser(join('~', '.globus', filename))
+                   for filename in ('usercert.pem', 'userkey.pem'))
+    if all(access(path, R_OK) for path in result):
+        return result
 
 
 def _find_username_password(url):
@@ -105,9 +101,9 @@ class SessionAuthMixin(object):
             :envvar:`X509_USER_KEY`
         b.  the environment variable :envvar:`X509_USER_PROXY`
         c.  the file :file:`/tmp/x509up_u{UID}`, where :samp:`{UID}` is your
-            numeric user ID
+            numeric user ID, if the file exists and is readable
         d.  the files :file:`~/.globus/usercert.pem` and
-            :file:`~/.globus/userkey.pem`
+            :file:`~/.globus/userkey.pem`, if they exist and are readable
 
     5.  Read the netrc file [1]_ located at :file:`~/.netrc`, or at the path
         stored in the environment variable :envvar:`NETRC`, and look for a
@@ -144,7 +140,7 @@ class SessionAuthMixin(object):
         # (as in `elif default_cert := _find_x509_credentials():`)
         # in order to defer unnecessary I/O,  but this requires
         # the := operator, which requires Python 3.8.
-        default_cert = _find_x509_credentials()
+        default_cert = _find_cert()
         default_basic_auth = _find_username_password(url)
 
         if force_noauth:
