@@ -15,9 +15,9 @@ def _find_cert():
 
     Notes
     -----
-    This function is adapted from the original _find_x509_credentials() method
-    in https://git.ligo.org/lscsoft/gracedb-client/blob/gracedb-2.5.0/ligo/gracedb/rest.py,
-    which is copyright (C) Brian Moe, Branson Stephens (2015).
+    This function is adapted from the original ``_find_x509_credentials()``
+    method in https://git.ligo.org/lscsoft/gracedb-client/blob/gracedb-2.5.0/ligo/gracedb/
+    rest.py, which is copyright (C) Brian Moe, Branson Stephens (2015).
 
     """  # noqa: E501
     result = tuple(environ.get(key)
