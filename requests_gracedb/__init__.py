@@ -29,7 +29,7 @@ class Session(SessionAuthMixin,
       (see :class:`~requests_gracedb.auth.SessionAuthMixin`)
 
     * Raise exceptions based on HTTP status codes
-      (see :class:`~requests_gracedb.error.SessionErrorMixin`)
+      (see :class:`~requests_gracedb.errors.SessionErrorMixin`)
 
     * Automatically load POSTed files from disk, automatically guess MIME types
       (see :class:`~requests_gracedb.file.SessionFileMixin`)
