@@ -4,7 +4,8 @@ Changelog
 0.1.3 (unreleased)
 ------------------
 
--   No changes yet.
+-   When reloading certificates, immediately close connections with old
+    certificates rather than simply leaving them for garbage collection.
 
 0.1.2 (2020-02-10)
 ------------------

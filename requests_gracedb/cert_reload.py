@@ -70,6 +70,7 @@ class _CertReloadingHTTPSConnectionPool(HTTPSConnectionPool):
             # condition below will evaulate to `True`.
             if not conn.cert_has_expired:
                 return conn
+            conn.close()
 
 
 class CertReloadingHTTPAdapter(HTTPAdapter):
