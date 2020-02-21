@@ -4,6 +4,9 @@ Changelog
 0.1.3 (unreleased)
 ------------------
 
+-   When searching for certificates in the default path, check that the files
+    both exist and are readable.
+
 -   When reloading certificates, immediately close connections with old
     certificates rather than simply leaving them for garbage collection.
 
