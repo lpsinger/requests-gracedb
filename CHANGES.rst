@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.1.3 (unreleased)
+0.1.3 (2020-02-20)
 ------------------
 
 -   When searching for certificates in the default path, check that the files
