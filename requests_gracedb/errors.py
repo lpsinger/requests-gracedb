@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+
+
 def _hook_raise_errors(response, *args, **kwargs):
     """Response hook to raise exception for any HTTP error (status >= 400)."""
     response.raise_for_status()
