@@ -1,8 +1,8 @@
 include:
-  - project: emfollow/gitlab-ci-templates
-    file: lint.yml
-  - project: emfollow/gitlab-ci-templates
-    file: sccb.yml
+  - project: computing/gitlab-ci-templates
+    file: python/lint.yml
+  - project: computing/gitlab-ci-templates
+    file: workflow/sccb.yml
 
 # Build source distribution
 sdist:
