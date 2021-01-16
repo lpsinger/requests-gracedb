@@ -54,6 +54,10 @@ test/3.8:
   image: python:3.8-slim
   <<: *test
 
+test/3.9:
+  image: python:3.9-slim
+  <<: *test
+
 pages:
   stage: deploy
   script:
